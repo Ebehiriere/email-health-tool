@@ -12,22 +12,20 @@ hide_st_style = """
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
-            /* Custom styling for the audit box */
+            /* Custom styling for the audit button */
             .stButton>button {width: 100%; border-radius: 5px; height: 3em; background-color: #007bff; color: white;}
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. Header Section with Logo
-col1, col2 = st.columns([1, 5])
-with col1:
-    # This is a placeholder email icon. Replace the URL with your actual logo link later.
-    st.image("https://cdn-icons-png.flaticon.com/512/281/281769.png", width=80)
+# 3. Logo and Header
+# Updated to look for your renamed file: logo.png
+try:
+    st.image("logo.png", width=350)
+except:
+    st.title("Email Solution Pro") # Fallback if image is missing
 
-with col2:
-    st.title("Email Solution Pro")
-    st.markdown("### Technical Email Health Audit")
-
+st.markdown("### Technical Email Health Audit")
 st.divider()
 
 # 4. Input Area
@@ -90,7 +88,7 @@ if st.button("🚀 Start Full Audit"):
                 else:
                     st.warning("⚠️ DMARC Not Found")
 
-                # DKIM Check (Google/Common Selectors)
+                # DKIM Check
                 for sel in ['google', 'default', 'k1', 'smtp']:
                     dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
                     if dk_r:
@@ -157,5 +155,5 @@ if st.button("🚀 Start Full Audit"):
         st.info("Please enter a domain name to begin.")
 
 # Sidebar Info
-st.sidebar.title("About this tool")
-st.sidebar.info("This tool performs a live check of your domain's DNS records and IP reputation to ensure your emails reach the inbox.")
+st.sidebar.title("About")
+st.sidebar.info("This professional tool is powered by Email Solution Pro to help businesses achieve 100% inbox delivery.")
