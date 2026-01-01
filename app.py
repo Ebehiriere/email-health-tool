@@ -19,7 +19,6 @@ hide_st_style = """
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             }
 
-            /* Main Header */
             .main-title {
                 font-size: 42px !important;
                 font-weight: 800 !important;
@@ -30,7 +29,6 @@ hide_st_style = """
                 padding-bottom: 5px !important;
             }
 
-            /* Secondary Header */
             .sub-title {
                 font-size: 20px !important;
                 font-weight: 400 !important;
@@ -45,7 +43,6 @@ hide_st_style = """
                 margin-bottom: 20px !important;
             }
 
-            /* Primary Audit Button */
             .stButton>button {
                 width: 100%; 
                 border-radius: 8px; 
@@ -74,6 +71,48 @@ with st.sidebar:
         st.subheader("Email Solution Pro")
     
     st.markdown("### 🛠️ More Tools")
-    st.markdown("""
-    - [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)
-    - [SPF Record Generator](https://emailsolutionpro.com/tools/spf)
+    st.markdown("- [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)\n- [SPF Record Generator](https://emailsolutionpro.com/tools/spf)\n- [DMARC Lookup](https://emailsolutionpro.com/tools/dmarc)")
+    st.divider()
+    st.markdown("### 📚 Resources")
+    st.markdown("- [DMARC Guide 2026](https://emailsolutionpro.com/dmarc)\n- [Avoid Spam Folders](https://emailsolutionpro.com/tips)\n- [Contact Support](https://emailsolutionpro.com/contact)")
+
+# 4. Main Interface
+st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
+st.divider()
+
+domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
+
+with st.expander("⚙️ Advanced: Manual DKIM Selector"):
+    custom_selector = st.text_input("Custom DKIM Selector (Optional)", placeholder="e.g., s1, mandrill, m1")
+
+# DNS Setup
+resolver = dns.resolver.Resolver()
+resolver.nameservers = ['8.8.8.8', '8.8.4.4']
+resolver.timeout = 5
+
+def robust_query(query_domain, record_type):
+    try:
+        return resolver.resolve(query_domain, record_type)
+    except:
+        return None
+
+# 5. Audit Logic
+if st.button("🚀 Run Free Deliverability Audit"):
+    if domain:
+        with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
+            time.sleep(1.2)
+            
+            spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
+            ip_display = "N/A"
+            active_selector = "None"
+
+            c1, c2 = st.columns(2)
+            
+            with c1:
+                st.subheader("🛡️ Authentication")
+                mx_r = robust_query(domain, 'MX')
+                if mx_r:
+                    st.success("✅ MX Found")
+                    mx_s = True
+                else
