@@ -162,11 +162,12 @@ if st.button("🚀 Run Free Deliverability Audit"):
     else:
         st.info("Please enter a domain name to begin.")
 
-# 6. Sidebar Info & NEW Resources Section
+# 6. Sidebar Info (Kept as is)
 st.sidebar.image("logo.png", use_container_width=True)
 st.sidebar.title("About")
 st.sidebar.info("EmailSolution Pro's free tool to check email spam scores, verify domain authentication, and diagnose deliverability problems instantly.")
 
+# ONLY ADDED: Resources Section
 st.sidebar.divider()
 st.sidebar.title("📚 Resources")
 st.sidebar.markdown("""
