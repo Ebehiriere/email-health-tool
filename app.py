@@ -4,18 +4,23 @@ import socket
 import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
+st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️", layout="wide")
 
-# 2. Premium White-Label CSS (Stable UI + Locked Sidebar)
+# 2. Premium White-Label CSS (STABLE & LOCKED OPEN)
 hide_st_style = """
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* --- LOCK SIDEBAR & REMOVE TOGGLE --- */
+/* THIS LOCKS THE SIDEBAR OPEN AND REMOVES THE TOGGLE BUTTON */
 [data-testid="collapsedControl"] {
     display: none !important;
+}
+
+section[data-testid="stSidebar"] {
+    min-width: 300px !important;
+    max-width: 300px !important;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
@@ -63,14 +68,12 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # 3. SIDEBAR: Logo & Multi-Tool Navigation
 with st.sidebar:
-    # Add Logo at the top
     try:
         st.image("logo.png", use_container_width=True)
     except:
         st.title("Email Solution Pro")
     
     st.markdown("---")
-    
     st.markdown("### 🛠️ More Free Tools")
     st.markdown("🏠 **[Email Health Audit](/)** (Current)")
     st.markdown("🔍 [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)")
@@ -79,14 +82,13 @@ with st.sidebar:
     st.markdown("🖼️ [Bimi Record Checker](https://emailsolutionpro.com/tools/bimi)")
     
     st.divider()
-    
     st.markdown("### 🚀 Expert Help")
     st.markdown("💼 [Managed Deliverability](https://emailsolutionpro.com/services)")
     st.markdown("📅 [Inbox Strategy Call](https://emailsolutionpro.com/book)")
-    
     st.divider()
     st.info("System Status: Online")
 
+# ... rest of your stable Audit Logic code remains exactly the same ...
 # 4. Main Interface
 st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
@@ -192,15 +194,10 @@ if st.button("🚀 Run Free Deliverability Audit"):
             </body></html>
             """
             
-            # Using .format to avoid triple-quote f-string errors
             report_html = report_template.format(
-                color=s_color,
-                dom=domain,
-                scr=score,
-                mx_res='PASS' if mx_s else 'FAIL',
-                spf_res='PASS' if spf_s else 'FAIL',
-                dm_res='PASS' if dmarc_s else 'FAIL',
-                dk_res='PASS' if dkim_s else 'FAIL',
+                color=s_color, dom=domain, scr=score,
+                mx_res='PASS' if mx_s else 'FAIL', spf_res='PASS' if spf_s else 'FAIL',
+                dm_res='PASS' if dmarc_s else 'FAIL', dk_res='PASS' if dkim_s else 'FAIL',
                 bl_res='CLEAN' if black_s else 'BLACKLISTED'
             )
             
