@@ -6,12 +6,17 @@ import time
 # 1. Page Configuration
 st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
 
-# 2. Premium White-Label CSS (Stable UI)
+# 2. Premium White-Label CSS (Stable UI + Locked Sidebar)
 hide_st_style = """
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
+
+/* --- LOCK SIDEBAR & REMOVE TOGGLE --- */
+[data-testid="collapsedControl"] {
+    display: none !important;
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
 html, body, [class*="css"], .stMarkdown {
@@ -56,13 +61,17 @@ html, body, [class*="css"], .stMarkdown {
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. SIDEBAR: Multi-Tool Navigation (Fixed Error)
+# 3. SIDEBAR: Logo & Multi-Tool Navigation
 with st.sidebar:
-    st.title("Email Solution Pro")
+    # Add Logo at the top
+    try:
+        st.image("logo.png", use_container_width=True)
+    except:
+        st.title("Email Solution Pro")
+    
     st.markdown("---")
     
     st.markdown("### 🛠️ More Free Tools")
-    # Fixed: Removed st.page_link to prevent KeyError
     st.markdown("🏠 **[Email Health Audit](/)** (Current)")
     st.markdown("🔍 [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)")
     st.markdown("📜 [SPF Record Generator](https://emailsolutionpro.com/tools/spf)")
@@ -171,17 +180,30 @@ if st.button("🚀 Run Free Deliverability Audit"):
             if score >= 80: st.balloons()
 
             # --- COLORFUL HTML REPORT ---
-            report_html = f"""
+            report_template = """
             <html><body style="font-family: sans-serif; padding: 20px;">
-                <div style="max-width: 600px; margin: auto; border-radius: 10px; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {s_color};">
-                    <h2 style="color: #0f172a;">Audit Report: {domain}</h2>
-                    <div style="background: {s_color}; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0;">Score: {score}/100</div>
-                    <p>MX: {'PASS' if mx_s else 'FAIL'} | SPF: {'PASS' if spf_s else 'FAIL'}</p>
-                    <p>DMARC: {'PASS' if dmarc_s else 'FAIL'} | DKIM: {'PASS' if dkim_s else 'FAIL'}</p>
-                    <p>Blacklist Status: {'CLEAN' if black_s else 'BLACKLISTED'}</p>
+                <div style="max-width: 600px; margin: auto; border-radius: 10px; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {color};">
+                    <h2 style="color: #0f172a;">Audit Report: {dom}</h2>
+                    <div style="background: {color}; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0;">Score: {scr}/100</div>
+                    <p>MX: {mx_res} | SPF: {spf_res}</p>
+                    <p>DMARC: {dm_res} | DKIM: {dk_res}</p>
+                    <p>Blacklist Status: {bl_res}</p>
                 </div>
             </body></html>
             """
+            
+            # Using .format to avoid triple-quote f-string errors
+            report_html = report_template.format(
+                color=s_color,
+                dom=domain,
+                scr=score,
+                mx_res='PASS' if mx_s else 'FAIL',
+                spf_res='PASS' if spf_s else 'FAIL',
+                dm_res='PASS' if dmarc_s else 'FAIL',
+                dk_res='PASS' if dkim_s else 'FAIL',
+                bl_res='CLEAN' if black_s else 'BLACKLISTED'
+            )
+            
             st.download_button(label="📥 Download Colorful Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
 
             st.markdown("---")
