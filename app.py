@@ -201,7 +201,7 @@ if st.button("🚀 Run Free Deliverability Audit"):
                 bl_res='CLEAN' if black_s else 'BLACKLISTED'
             )
             
-            st.download_button(label="📥 Download Colorful Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
+            st.download_button(label="📥 Download Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
 
             st.markdown("---")
             if score < 100:
@@ -212,3 +212,4 @@ if st.button("🚀 Run Free Deliverability Audit"):
                 st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
     else:
         st.info("Please enter a domain name to begin.")
+
