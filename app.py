@@ -4,167 +4,177 @@ import socket
 import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="Free Email Spam Test | Email Solution Pro", page_icon="✉️")
+st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
 
-# 2. Clean & Sophisticated CSS
-st.markdown("""
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    /* Typography */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
-    html, body, [class*="css"], .stMarkdown {
-        font-family: 'Inter', sans-serif;
-    }
+# 2. Premium White-Label CSS
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
 
-    /* Main Container Spacing */
-    .block-container {
-        padding-top: 2rem !important;
-        max-width: 800px;
-    }
+            /* High-end Font Stack */
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+            html, body, [class*="css"], .stMarkdown {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            }
 
-    /* Professional Headers */
-    .main-header {
-        font-size: 42px !important;
-        font-weight: 800 !important;
-        color: #0f172a !important;
-        letter-spacing: -1.5px !important;
-        line-height: 1.1;
-        margin-bottom: 8px;
-    }
-    .sub-header {
-        font-size: 18px !important;
-        color: #64748b !important;
-        margin-bottom: 30px;
-    }
+            /* Main Header: Bold & Impactful */
+            .main-title {
+                font-size: 42px !important;
+                font-weight: 800 !important;
+                letter-spacing: -1.5px !important;
+                color: #0f172a !important;
+                line-height: 1.1 !important;
+                margin-bottom: 0px !important;
+                padding-bottom: 5px !important;
+            }
 
-    /* Input Styling */
-    .stTextInput > div > div > input {
-        border-radius: 8px !important;
-        padding: 12px !important;
-        border: 1px solid #e2e8f0 !important;
-    }
+            /* Secondary Header: Muted & Professional */
+            .sub-title {
+                font-size: 20px !important;
+                font-weight: 400 !important;
+                color: #64748b !important;
+                letter-spacing: -0.5px !important;
+                margin-top: -5px !important;
+                margin-bottom: 15px !important;
+            }
 
-    /* Button Styling */
-    .stButton > button {
-        width: 100%;
-        background-color: #0f172a !important;
-        color: white !important;
-        border-radius: 8px !important;
-        height: 3.5rem !important;
-        font-weight: 700 !important;
-        font-size: 16px !important;
-        transition: 0.3s;
-    }
-    .stButton > button:hover {
-        background-color: #334155 !important;
-        transform: translateY(-2px);
-    }
-    </style>
-    """, unsafe_allow_html=True)
+            /* Tightening the divider spacing */
+            hr {
+                margin-top: 5px !important;
+                margin-bottom: 20px !important;
+            }
 
-# 3. Sidebar: Resources & Tools
+            /* High-Conversion Audit Button */
+            .stButton>button {
+                width: 100%; 
+                border-radius: 8px; 
+                height: 3.5em; 
+                background-color: #1e293b; 
+                color: white; 
+                font-weight: bold;
+                font-size: 18px;
+                border: none;
+                transition: 0.3s;
+            }
+            .stButton>button:hover {
+                background-color: #000000;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# 3. Sidebar: Branding & Resources
 with st.sidebar:
     try:
         st.image("logo.png", use_container_width=True)
     except:
         st.subheader("Email Solution Pro")
     
+    st.markdown("### 🛠️ More Tools")
+    st.markdown("""
+    - [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)
+    - [SPF Record Generator](https://emailsolutionpro.com/tools/spf)
+    - [DMARC Lookup](https://emailsolutionpro.com/tools/dmarc)
+    """)
+    
+    st.divider()
+    
     st.markdown("### 📚 Resources")
     st.markdown("""
-    Find guides and documentation to help you master email deliverability.
-    
-    * [DMARC Implementation Guide](https://emailsolutionpro.com/dmarc)
-    * [SPF & DKIM Explained](https://emailsolutionpro.com/dns)
-    * [Avoid Spam Filters](https://emailsolutionpro.com/tips)
+    - [DMARC Guide 2026](https://emailsolutionpro.com/dmarc)
+    - [Avoid Spam Folders](https://emailsolutionpro.com/tips)
+    - [Contact Support](https://emailsolutionpro.com/contact)
     """)
-    
-    st.divider()
-    
-    st.markdown("### 🛠️ Other Tools")
-    st.markdown("""
-    * [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)
-    * [SPF Record Generator](https://emailsolutionpro.com/tools/spf)
-    * [Contact an Expert](https://emailsolutionpro.com/contact)
-    """)
-    
-    st.divider()
-    st.info("Ensuring your emails reach the inbox, every time.")
 
-# 4. Main UI Content
-st.markdown('<p class="main-header">Email Health Audit</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">Identify technical issues preventing your emails from reaching the inbox.</p>', unsafe_allow_html=True)
+# 4. Main Interface
+st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
+st.divider()
 
-domain = st.text_input("Enter your domain", placeholder="example.com", label_visibility="collapsed")
+# Input Area
+domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
 
-# DNS Helper
+# DNS Setup
 resolver = dns.resolver.Resolver()
 resolver.nameservers = ['8.8.8.8', '8.8.4.4']
 resolver.timeout = 5
 
-def check_dns(d, t):
-    try: return resolver.resolve(d, t)
-    except: return None
+def robust_query(query_domain, record_type):
+    try:
+        return resolver.resolve(query_domain, record_type)
+    except:
+        return None
 
-# 5. Execution Logic
-if st.button("Run Technical Audit"):
+# 5. Audit Logic
+if st.button("🚀 Run Free Deliverability Audit"):
     if domain:
-        with st.spinner("Analyzing domain records..."):
-            time.sleep(1)
+        with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
+            time.sleep(1.2)
             
-            # Checks
-            mx = check_dns(domain, 'MX')
-            txt = check_dns(domain, 'TXT')
-            dmarc = check_dns(f"_dmarc.{domain}", 'TXT')
-            
-            spf_found = any("v=spf1" in r.to_text() for r in txt) if txt else False
-            dkim_found = any(check_dns(f"{s}._domainkey.{domain}", 'TXT') for s in ['google', 'default', 'k1', 'smtp'])
-            
-            # Reputation
-            try:
-                ip = socket.gethostbyname(domain)
-                rev = ".".join(reversed(ip.split(".")))
-                is_blacklisted = False
-                try: 
-                    resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
-                    is_blacklisted = True
-                except: pass
-            except:
-                ip = "N/A"
-                is_blacklisted = False
+            spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
+            ip_display = "N/A"
 
-            # Display Results
-            score = sum([bool(mx), spf_found, bool(dmarc), dkim_found, not is_blacklisted]) * 20
+            # Results Display
+            c1, c2 = st.columns(2)
             
-            st.divider()
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown("### 🛡️ Authentication")
-                st.write(f"{'✅' if mx else '❌'} MX Record")
-                st.write(f"{'✅' if spf_found else '❌'} SPF Record")
-                st.write(f"{'✅' if dmarc else '❌'} DMARC Record")
-                st.write(f"{'✅' if dkim_found else '❌'} DKIM Record")
-                
-            with col2:
-                st.markdown("### 🚩 Reputation")
-                st.write(f"**IP Address:** {ip}")
-                if is_blacklisted:
-                    st.error("⚠️ IP Blacklisted (Spamhaus)")
+            with c1:
+                st.subheader("🛡️ Authentication")
+                mx_r = robust_query(domain, 'MX')
+                if mx_r:
+                    st.success("✅ MX Found")
+                    mx_s = True
                 else:
-                    st.success("✅ Reputation is Clean")
+                    st.error("❌ MX Record Missing")
+                
+                txt_r = robust_query(domain, 'TXT')
+                if txt_r:
+                    spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
+                    if spf_find:
+                        st.success("✅ SPF Found")
+                        spf_s = True
+                    else:
+                        st.error("❌ SPF Record Missing")
+                
+                dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
+                if dm_r:
+                    st.success("✅ DMARC Found")
+                    dmarc_s = True
+                else:
+                    st.warning("⚠️ DMARC Not Found")
 
-            st.markdown(f"## Health Score: {score}/100")
-            
+            with c2:
+                st.subheader("🚩 Reputation")
+                try:
+                    ip_display = socket.gethostbyname(domain)
+                    st.info(f"Domain IP: {ip_display}")
+                    rev = ".".join(reversed(ip_display.split(".")))
+                    try:
+                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
+                        st.error("⚠️ ALERT: IP Blacklisted!")
+                        black_s = False
+                    except:
+                        st.success("✅ IP is Clean (Spamhaus)")
+                except:
+                    st.error("Could not resolve IP address.")
+
             st.divider()
+            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
+            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
             
+            st.subheader(f"📊 Your Health Score: {score}/100")
+            if score >= 80: st.balloons()
+            
+            # CTA
+            st.markdown("---")
             if score < 100:
-                st.warning("We found issues that could cause your emails to land in the spam folder.")
+                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
                 st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
             else:
-                st.success("Your technical setup looks great!")
-                st.link_button("👉 Maintain Your Reputation", "https://emailsolutionpro.com/contact")
+                st.success("Great job! Your domain is healthy.")
+                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
     else:
-        st.error("Please enter a domain name.")
+        st.info("Please enter a domain name to begin.")
