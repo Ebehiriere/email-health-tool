@@ -93,7 +93,13 @@ st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
 
+# Input Section
 domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
+
+# Manual DKIM Selector (Advanced Option)
+with st.expander("⚙️ Advanced: Manual DKIM Selector"):
+    custom_selector = st.text_input("Custom DKIM Selector (Optional)", placeholder="e.g., s1, mandrill, m1")
+    st.caption("If you use a specific DKIM selector that isn't standard, enter it here.")
 
 # DNS Setup
 resolver = dns.resolver.Resolver()
@@ -146,16 +152,20 @@ if st.button("🚀 Run Free Deliverability Audit"):
                 else:
                     st.warning("⚠️ DMARC Not Found")
 
-                # DKIM Check (FIXED & RESTORED)
-                # We check common selectors: google, default, k1, and mandrill
-                for selector in ['google', 'default', 'k1', 'mandrill', 'smtp']:
+                # DKIM Check (Automatic + Manual)
+                selectors_to_check = ['google', 'default', 'k1', 'smtp']
+                if custom_selector:
+                    selectors_to_check.insert(0, custom_selector.strip())
+
+                for selector in selectors_to_check:
                     dk_r = robust_query(f"{selector}._domainkey.{domain}", 'TXT')
                     if dk_r:
                         st.success(f"✅ DKIM Found ({selector})")
                         dkim_s = True
                         break
+                
                 if not dkim_s:
-                    st.info("ℹ️ DKIM: Selector not found via auto-scan")
+                    st.info("ℹ️ DKIM: Selector not found")
 
             with c2:
                 st.subheader("🚩 Reputation")
@@ -173,14 +183,11 @@ if st.button("🚀 Run Free Deliverability Audit"):
                     st.error("Could not resolve IP address.")
 
             st.divider()
-            # Scoring includes dkim_s now
             score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
-            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
             
             st.subheader(f"📊 Your Health Score: {score}/100")
             if score >= 80: st.balloons()
             
-            # CTA
             st.markdown("---")
             if score < 100:
                 st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
