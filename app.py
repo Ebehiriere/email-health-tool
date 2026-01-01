@@ -40,13 +40,11 @@ hide_st_style = """
                 margin-bottom: 15px !important;
             }
 
-            /* Tightening the divider spacing */
             hr {
                 margin-top: 5px !important;
                 margin-bottom: 20px !important;
             }
 
-            /* High-Conversion Audit Button */
             .stButton>button {
                 width: 100%; 
                 border-radius: 8px; 
@@ -95,7 +93,6 @@ st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
 
-# Input Area
 domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
 
 # DNS Setup
@@ -118,11 +115,12 @@ if st.button("🚀 Run Free Deliverability Audit"):
             spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
             ip_display = "N/A"
 
-            # Results Display
             c1, c2 = st.columns(2)
             
             with c1:
                 st.subheader("🛡️ Authentication")
+                
+                # MX Check
                 mx_r = robust_query(domain, 'MX')
                 if mx_r:
                     st.success("✅ MX Found")
@@ -130,6 +128,7 @@ if st.button("🚀 Run Free Deliverability Audit"):
                 else:
                     st.error("❌ MX Record Missing")
                 
+                # SPF Check
                 txt_r = robust_query(domain, 'TXT')
                 if txt_r:
                     spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
@@ -139,12 +138,24 @@ if st.button("🚀 Run Free Deliverability Audit"):
                     else:
                         st.error("❌ SPF Record Missing")
                 
+                # DMARC Check
                 dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
                 if dm_r:
                     st.success("✅ DMARC Found")
                     dmarc_s = True
                 else:
                     st.warning("⚠️ DMARC Not Found")
+
+                # DKIM Check (FIXED & RESTORED)
+                # We check common selectors: google, default, k1, and mandrill
+                for selector in ['google', 'default', 'k1', 'mandrill', 'smtp']:
+                    dk_r = robust_query(f"{selector}._domainkey.{domain}", 'TXT')
+                    if dk_r:
+                        st.success(f"✅ DKIM Found ({selector})")
+                        dkim_s = True
+                        break
+                if not dkim_s:
+                    st.info("ℹ️ DKIM: Selector not found via auto-scan")
 
             with c2:
                 st.subheader("🚩 Reputation")
@@ -162,6 +173,7 @@ if st.button("🚀 Run Free Deliverability Audit"):
                     st.error("Could not resolve IP address.")
 
             st.divider()
+            # Scoring includes dkim_s now
             score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
             s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
             
