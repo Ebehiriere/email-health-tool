@@ -6,12 +6,17 @@ import time
 # 1. Page Configuration
 st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
 
-# 2. Premium White-Label CSS (Stable UI)
+# 2. Premium White-Label CSS (Includes Sidebar Toggle Removal)
 hide_st_style = """
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
+
+/* --- REMOVE SIDEBAR TOGGLE --- */
+[data-testid="collapsedControl"] {
+    display: none;
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
 html, body, [class*="css"], .stMarkdown {
@@ -56,13 +61,12 @@ html, body, [class*="css"], .stMarkdown {
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. SIDEBAR: Multi-Tool Navigation (Fixed Error)
+# 3. SIDEBAR: Multi-Tool Navigation
 with st.sidebar:
     st.title("Email Solution Pro")
     st.markdown("---")
     
     st.markdown("### 🛠️ More Free Tools")
-    # Fixed: Removed st.page_link to prevent KeyError
     st.markdown("🏠 **[Email Health Audit](/)** (Current)")
     st.markdown("🔍 [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)")
     st.markdown("📜 [SPF Record Generator](https://emailsolutionpro.com/tools/spf)")
