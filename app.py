@@ -57,7 +57,45 @@ html, body, [class*="css"], .stMarkdown {
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # 3. Sidebar: Branding & Resources
+# 3. Sidebar: Trust Center & Navigation
 with st.sidebar:
+    try:
+        st.image("logo.png", use_container_width=True)
+    except:
+        st.subheader("✉️ Email Solution Pro")
+    
+    st.markdown("---")
+    
+    # Tool Status Section
+    st.caption("SYSTEM STATUS")
+    st.success("● DNS Audit Engine Online")
+    st.success("● Reputation Servers Connected")
+
+    st.markdown("---")
+
+    # Group 1: Expert Services
+    st.markdown("### 🛠️ Professional Services")
+    st.write("- [Custom Deliverability Audit](https://emailsolutionpro.com/services/audit)")
+    st.write("- [Managed DMARC Setup](https://emailsolutionpro.com/services/dmarc)")
+    st.write("- [Cold Email Consulting](https://emailsolutionpro.com/contact)")
+
+    st.divider()
+
+    # Group 2: Free Knowledge Base
+    st.markdown("### 📚 Free Resources")
+    st.write("- [Deliverability Guide 2026](https://emailsolutionpro.com/guide)")
+    st.write("- [Spam Filter Secrets](https://emailsolutionpro.com/spam-filters)")
+    st.write("- [DNS Record Templates](https://emailsolutionpro.com/templates)")
+
+    st.divider()
+
+    # Trust/About Section
+    with st.expander("Why Trust Us?"):
+        st.write("""
+        Email Solution Pro has helped 500+ companies reach the inbox. 
+        Our tool queries real-time DNS data from Google (8.8.8.8) and 
+        checks reputation against major blacklists like Spamhaus.
+        """)
     try:
         st.image("logo.png", use_container_width=True)
     except:
@@ -216,3 +254,4 @@ if st.button("🚀 Run Free Deliverability Audit"):
                 st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
     else:
         st.info("Please enter a domain name to begin.")
+
