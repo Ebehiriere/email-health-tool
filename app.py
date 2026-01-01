@@ -56,23 +56,24 @@ html, body, [class*="css"], .stMarkdown {
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. SIDEBAR: Multi-Tool Navigation
+# 3. SIDEBAR: Multi-Tool Navigation (Fixed Error)
 with st.sidebar:
     st.title("Email Solution Pro")
     st.markdown("---")
     
     st.markdown("### 🛠️ More Free Tools")
-    st.page_link("app.py", label="Email Health Audit", icon="🛡️") # Current Page
-    st.markdown("[Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)")
-    st.markdown("[SPF Record Generator](https://emailsolutionpro.com/tools/spf)")
-    st.markdown("[DMARC Lookup Tool](https://emailsolutionpro.com/tools/dmarc)")
-    st.markdown("[Bimi Record Checker](https://emailsolutionpro.com/tools/bimi)")
+    # Fixed: Removed st.page_link to prevent KeyError
+    st.markdown("🏠 **[Email Health Audit](/)** (Current)")
+    st.markdown("🔍 [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)")
+    st.markdown("📜 [SPF Record Generator](https://emailsolutionpro.com/tools/spf)")
+    st.markdown("🔐 [DMARC Lookup Tool](https://emailsolutionpro.com/tools/dmarc)")
+    st.markdown("🖼️ [Bimi Record Checker](https://emailsolutionpro.com/tools/bimi)")
     
     st.divider()
     
     st.markdown("### 🚀 Expert Help")
-    st.markdown("[Managed Deliverability](https://emailsolutionpro.com/services)")
-    st.markdown("[Inbox Strategy Call](https://emailsolutionpro.com/book)")
+    st.markdown("💼 [Managed Deliverability](https://emailsolutionpro.com/services)")
+    st.markdown("📅 [Inbox Strategy Call](https://emailsolutionpro.com/book)")
     
     st.divider()
     st.info("System Status: Online")
