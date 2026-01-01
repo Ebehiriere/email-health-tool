@@ -1,11 +1,10 @@
-
 import streamlit as st
 import dns.resolver
 import socket
 import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="Email Health Tool | Email Solution Pro", page_icon="✉️")
+st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
 
 # 2. White Label: Hide Streamlit Menu and Footer
 hide_st_style = """
@@ -14,18 +13,33 @@ hide_st_style = """
             footer {visibility: hidden;}
             header {visibility: hidden;}
             /* Custom styling for the audit button */
-            .stButton>button {width: 100%; border-radius: 5px; height: 3em; background-color: #007bff; color: white;}
+            .stButton>button {
+                width: 100%; 
+                border-radius: 8px; 
+                height: 3.5em; 
+                background-color: #1e293b; 
+                color: white; 
+                font-weight: bold;
+                font-size: 18px;
+                border: none;
+                transition: 0.3s;
+            }
+            .stButton>button:hover {
+                background-color: #000000;
+                transform: translateY(-2px);
+            }
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # 3. Logo and Header
-# Updated to look for your renamed file: logo.png
 try:
     st.image("logo.png", width=350)
 except:
-    st.title("Email Solution Pro") # Fallback if image is missing
+    st.title("Email Solution Pro") 
 
+# This is the updated SEO-friendly name
+st.markdown("# Free Email Spam Test & Deliverability Checker")
 st.markdown("### Technical Email Health Audit")
 st.divider()
 
@@ -48,7 +62,7 @@ def robust_query(query_domain, record_type):
     return None
 
 # 5. Audit Logic
-if st.button("🚀 Start Full Audit"):
+if st.button("🚀 Run Free Deliverability Audit"):
     if domain:
         with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
             time.sleep(1.2)
@@ -148,13 +162,19 @@ if st.button("🚀 Start Full Audit"):
                 mime="text/html"
             )
             
-            # 8. Business Call to Action
+            # 8. Business Call to Action (The Conversion Button)
+            st.markdown("---")
             if score < 100:
-                st.warning("🚨 We detected issues that could send your emails to spam.")
-                st.link_button("Contact an Expert to Fix This", "https://emailsolutionpro.com/contact")
+                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
+                st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
+            else:
+                st.success("Great job! Your domain is healthy. Need professional management?")
+                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
+                
     else:
         st.info("Please enter a domain name to begin.")
 
 # Sidebar Info
+st.sidebar.image("logo.png", use_container_width=True)
 st.sidebar.title("About")
 st.sidebar.info("This professional tool is powered by Email Solution Pro to help businesses achieve 100% inbox delivery.")
