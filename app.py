@@ -4,19 +4,16 @@ import socket
 import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️", layout="wide")
+st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
 
-# 2. Premium White-Label CSS (STABLE & LOCKED OPEN)
+# 2. Premium White-Label CSS (Locked Sidebar & ESP Brand Colors)
 hide_st_style = """
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* THIS LOCKS THE SIDEBAR OPEN AND REMOVES THE TOGGLE BUTTON */
-[data-testid="collapsedControl"] {
-    display: none !important;
-}
+[data-testid="collapsedControl"] { display: none !important; }
 
 section[data-testid="stSidebar"] {
     min-width: 300px !important;
@@ -25,48 +22,37 @@ section[data-testid="stSidebar"] {
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
 html, body, [class*="css"], .stMarkdown {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .main-title {
     font-size: 42px !important;
     font-weight: 800 !important;
-    letter-spacing: -1.5px !important;
     color: #0f172a !important;
     line-height: 1.1 !important;
-    margin-bottom: 0px !important;
-    padding-bottom: 5px !important;
-}
-
-.sub-title {
-    font-size: 20px !important;
-    font-weight: 400 !important;
-    color: #64748b !important;
-    letter-spacing: -0.5px !important;
-    margin-top: -5px !important;
-    margin-bottom: 15px !important;
 }
 
 .stButton>button {
-    width: 100%; 
-    border-radius: 8px; 
-    height: 3.5em; 
-    background-color: #1e293b; 
-    color: white; 
-    font-weight: bold;
-    font-size: 18px;
-    border: none;
-    transition: 0.3s;
+    width: 100%; border-radius: 8px; height: 3.5em; 
+    background-color: #1e293b; color: white; font-weight: bold;
+    font-size: 18px; border: none; transition: 0.3s;
 }
-.stButton>button:hover {
-    background-color: #000000;
-    transform: translateY(-2px);
+.stButton>button:hover { background-color: #000000; transform: translateY(-2px); }
+
+/* Footer Styling */
+.footer {
+    position: fixed; left: 300px; bottom: 0; width: calc(100% - 300px);
+    background-color: #0f172a; color: #ffffff; text-align: center;
+    padding: 15px; font-size: 14px; z-index: 1000; border-top: 1px solid #1e293b;
 }
+.footer a { color: #38bdf8; text-decoration: none; font-weight: 600; margin: 0 10px; }
+
+.main .block-container { padding-bottom: 120px !important; }
 </style>
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. SIDEBAR: Logo & Multi-Tool Navigation
+# 3. SIDEBAR: Logo & Navigation
 with st.sidebar:
     try:
         st.image("logo.png", use_container_width=True)
@@ -79,7 +65,6 @@ with st.sidebar:
     st.markdown("🔍 [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)")
     st.markdown("📜 [SPF Record Generator](https://emailsolutionpro.com/tools/spf)")
     st.markdown("🔐 [DMARC Lookup Tool](https://emailsolutionpro.com/tools/dmarc)")
-    st.markdown("🖼️ [Bimi Record Checker](https://emailsolutionpro.com/tools/bimi)")
     
     st.divider()
     st.markdown("### 🚀 Expert Help")
@@ -88,17 +73,15 @@ with st.sidebar:
     st.divider()
     st.info("System Status: Online")
 
-# ... rest of your stable Audit Logic code remains exactly the same ...
 # 4. Main Interface
 st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
+st.markdown('<p style="color: #64748b; font-size: 20px;">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
 
-domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
+domain = st.text_input("Enter your domain", value="", placeholder="example.com")
 
 with st.expander("⚙️ Advanced: Manual DKIM Selector"):
-    custom_selector = st.text_input("Custom DKIM Selector (Optional)", placeholder="e.g., s1, mandrill")
-    st.markdown("Google: `google` | Microsoft: `selector1` | Others: check `selector._domainkey` host.")
+    custom_selector = st.text_input("Custom DKIM Selector (Optional)", placeholder="google")
 
 # DNS Setup
 resolver = dns.resolver.Resolver()
@@ -106,161 +89,112 @@ resolver.nameservers = ['8.8.8.8', '8.8.4.4']
 resolver.timeout = 5
 
 def robust_query(query_domain, record_type):
-    try:
-        return resolver.resolve(query_domain, record_type)
-    except:
-        return None
+    try: return resolver.resolve(query_domain, record_type)
+    except: return None
 
 # 5. Audit Logic
 if st.button("🚀 Run Free Deliverability Audit"):
     if domain:
-        with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
-            time.sleep(1.2)
-            spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
-            active_selector = "None"
+        # Step-by-Step Progress Simulation
+        status_bar = st.progress(0)
+        status_text = st.empty()
+        
+        stages = [
+            (25, "🔍 Checking MX and SPF records..."),
+            (50, "🛡️ Validating DMARC policy..."),
+            (75, "🚩 Scanning Global Blacklists..."),
+            (100, "📊 Finalizing your report...")
+        ]
+        
+        for percent, msg in stages:
+            status_text.text(msg)
+            status_bar.progress(percent)
+            time.sleep(0.6)
+        
+        status_text.empty()
+        status_bar.empty()
+
+        spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            st.subheader("🛡️ Authentication")
+            # MX Check
+            if robust_query(domain, 'MX'): mx_s = True; st.success("✅ MX Records Found")
+            else: st.error("❌ MX Records Missing")
             
-            c1, c2 = st.columns(2)
-            with c1:
-                st.subheader("🛡️ Authentication")
-                mx_r = robust_query(domain, 'MX')
-                if mx_r:
-                    st.success("✅ MX Found")
-                    mx_s = True
-                else:
-                    st.error("❌ MX Record Missing")
-                
-                txt_r = robust_query(domain, 'TXT')
-                if txt_r:
-                    spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
-                    if spf_find:
-                        st.success("✅ SPF Found")
-                        spf_s = True
-                    else:
-                        st.error("❌ SPF Record Missing")
-                else:
-                    st.error("❌ TXT Records Missing")
-                
-                dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
-                if dm_r:
-                    st.success("✅ DMARC Found")
-                    dmarc_s = True
-                else:
-                    st.warning("⚠️ DMARC Not Found")
+            # SPF Check
+            txt_r = robust_query(domain, 'TXT')
+            if txt_r and any("v=spf1" in r.to_text() for r in txt_r):
+                spf_s = True; st.success("✅ SPF Record Found")
+            else: st.error("❌ SPF Record Missing")
+            
+            # DMARC Interpreter
+            dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
+            if dm_r:
+                dmarc_s = True
+                record = dm_r[0].to_text()
+                if "p=reject" in record: st.success("✅ DMARC: Reject (Maximum Protection)")
+                elif "p=quarantine" in record: st.warning("⚠️ DMARC: Quarantine (Partial Protection)")
+                else: st.info("ℹ️ DMARC: Monitor Only (No Protection)")
+            else: st.error("❌ DMARC Not Found")
 
-                selectors = ['google', 'default', 'k1', 'smtp', 'selector1']
-                if custom_selector:
-                    selectors.insert(0, custom_selector.strip())
-                for sel in selectors:
-                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
-                    if dk_r:
-                        st.success(f"✅ DKIM Found ({sel})")
-                        dkim_s = True
-                        active_selector = sel
-                        break
-                if not dkim_s:
-                    st.info("ℹ️ DKIM: Selector not found")
+            # DKIM Check
+            selectors = ['google', 'default', 'k1', 'smtp', 'selector1']
+            if custom_selector: selectors.insert(0, custom_selector.strip())
+            for sel in selectors:
+                if robust_query(f"{sel}._domainkey.{domain}", 'TXT'):
+                    dkim_s = True; st.success(f"✅ DKIM Found ({sel})"); break
+            if not dkim_s: st.info("ℹ️ DKIM: Common selectors not found")
 
-            with c2:
-                st.subheader("🚩 Reputation")
-                try:
-                    ip_display = socket.gethostbyname(domain)
-                    st.info(f"Domain IP: {ip_display}")
-                    rev = ".".join(reversed(ip_display.split(".")))
+        with c2:
+            st.subheader("🚩 Reputation")
+            try:
+                ip = socket.gethostbyname(domain)
+                rev = ".".join(reversed(ip.split(".")))
+                # Multi-Blacklist logic
+                blists = {"Spamhaus": "zen.spamhaus.org", "Barracuda": "b.barracudacentral.org"}
+                for name, srv in blists.items():
                     try:
-                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
-                        st.error("⚠️ ALERT: IP Blacklisted!")
+                        resolver.resolve(f"{rev}.{srv}", 'A')
+                        st.error(f"⚠️ Listed on {name}!")
                         black_s = False
-                    except:
-                        st.success("✅ IP is Clean (Spamhaus)")
-                except:
-                    st.error("Could not resolve IP address.")
+                    except: st.success(f"✅ Clean: {name}")
+            except: st.error("Could not resolve domain IP.")
 
-            st.divider()
-            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
-            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
-            st.subheader(f"📊 Your Health Score: {score}/100")
-            if score >= 80: st.balloons()
+        st.divider()
+        score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
+        s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
+        st.subheader(f"📊 Your Health Score: {score}/100")
+        if score >= 80: st.balloons()
 
-            # --- COLORFUL HTML REPORT ---
-            report_template = """
-            <html><body style="font-family: sans-serif; padding: 20px;">
-                <div style="max-width: 600px; margin: auto; border-radius: 10px; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {color};">
-                    <h2 style="color: #0f172a;">Audit Report: {dom}</h2>
-                    <div style="background: {color}; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0;">Score: {scr}/100</div>
-                    <p>MX: {mx_res} | SPF: {spf_res}</p>
-                    <p>DMARC: {dm_res} | DKIM: {dk_res}</p>
-                    <p>Blacklist Status: {bl_res}</p>
-                </div>
-            </body></html>
-            """
-            
-            report_html = report_template.format(
-                color=s_color, dom=domain, scr=score,
-                mx_res='PASS' if mx_s else 'FAIL', spf_res='PASS' if spf_s else 'FAIL',
-                dm_res='PASS' if dmarc_s else 'FAIL', dk_res='PASS' if dkim_s else 'FAIL',
-                bl_res='CLEAN' if black_s else 'BLACKLISTED'
-            )
-            
-            st.download_button(label="📥 Download Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
-
-            st.markdown("---")
-            if score < 100:
-                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
-                st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
-            else:
-                st.success("Great job! Your domain is healthy.")
-                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
+        # HTML Report logic
+        report_template = """
+        <html><body style="font-family: sans-serif; padding: 20px;">
+            <div style="max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {color};">
+                <h2>Deliverability Audit: {dom}</h2>
+                <div style="background:{color}; color:white; padding:15px; text-align:center; font-size:24px;">Score: {scr}/100</div>
+                <p>MX: {mx} | SPF: {spf} | DMARC: {dm} | DKIM: {dk} | Reputation: {rep}</p>
+            </div>
+        </body></html>
+        """
+        report_html = report_template.format(
+            color=s_color, dom=domain, scr=score,
+            mx='PASS' if mx_s else 'FAIL', spf='PASS' if spf_s else 'FAIL',
+            dm='PASS' if dmarc_s else 'FAIL', dk='PASS' if dkim_s else 'FAIL',
+            rep='CLEAN' if black_s else 'LISTED'
+        )
+        st.download_button(label="📥 Download Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
+        st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
     else:
         st.info("Please enter a domain name to begin.")
 
-
-# 6. Custom Professional Footer (Email Solution Pro Brand Match)
+# 6. Footer
 st.markdown("""
-    <style>
-    .footer {
-        position: fixed;
-        left: 300px;
-        bottom: 0;
-        width: calc(100% - 300px);
-        background-color: #0f172a; /* Deep Slate Navy */
-        color: #ffffff;
-        text-align: center;
-        padding: 20px;
-        font-size: 14px;
-        font-family: 'Inter', sans-serif;
-        z-index: 1000;
-        border-top: 1px solid #1e293b;
-    }
-    
-    .footer a {
-        color: #38bdf8; /* Brand Light Blue */
-        text-decoration: none;
-        font-weight: 600;
-        margin: 0 10px;
-    }
-    
-    .footer a:hover {
-        text-decoration: underline;
-    }
-
-    /* Padding for the main content so it doesn't get hidden behind footer */
-    .main .block-container {
-        padding-bottom: 100px !important;
-    }
-    
-    @media (max-width: 768px) {
-        .footer {
-            left: 0;
-            width: 100%;
-        }
-    }
-    </style>
     <div class="footer">
         <div>© 2026 <b>Email Solution Pro</b> | Precision Deliverability Engineering</div>
         <div style="margin-top: 5px;">
-            <a href="https://emailsolutionpro.com">Official Website</a> | 
-            <a href="https://emailsolutionpro.com/privacy">Privacy Policy</a> | 
-            <a href="https://emailsolutionpro.com/contact">Support</a>
+            <a href="https://emailsolutionpro.com">Website</a> | <a href="https://emailsolutionpro.com/privacy">Privacy</a> | <a href="https://emailsolutionpro.com/contact">Support</a>
         </div>
     </div>
 """, unsafe_allow_html=True)
