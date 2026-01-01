@@ -18,7 +18,7 @@ header {visibility: hidden;}
     display: none !important;
 }
 
-/* Ensure sidebar stays open on all devices */
+/* Ensure sidebar stays open */
 section[data-testid="stSidebar"] {
     min-width: 250px !important;
 }
@@ -123,9 +123,67 @@ if st.button("🚀 Run Free Deliverability Audit"):
                     spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
                     if spf_find: spf_s = True; st.success("✅ SPF Found")
                     else: st.error("❌ SPF Record Missing")
+                else:
+                    st.error("❌ TXT Records Missing")
                 
                 dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
                 if dm_r: dmarc_s = True; st.success("✅ DMARC Found")
                 else: st.warning("⚠️ DMARC Not Found")
 
-                selectors = ['google', 'default', 'k1',
+                selectors = ['google', 'default', 'k1', 'smtp', 'selector1']
+                if custom_selector: selectors.insert(0, custom_selector.strip())
+                for sel in selectors:
+                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
+                    if dk_r:
+                        dkim_s = True; st.success(f"✅ DKIM Found ({sel})")
+                        active_selector = sel; break
+                if not dkim_s: st.info("ℹ️ DKIM: Selector not found")
+
+            with c2:
+                st.subheader("🚩 Reputation")
+                try:
+                    ip_display = socket.gethostbyname(domain)
+                    st.info(f"Domain IP: {ip_display}")
+                    rev = ".".join(reversed(ip_display.split(".")))
+                    try:
+                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
+                        st.error("⚠️ ALERT: IP Blacklisted!")
+                        black_s = False
+                    except: st.success("✅ IP is Clean (Spamhaus)")
+                except: st.error("Could not resolve IP address.")
+
+            st.divider()
+            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
+            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
+            st.subheader(f"📊 Your Health Score: {score}/100")
+            if score >= 80: st.balloons()
+
+            # --- COLORFUL HTML REPORT ---
+            report_template = """
+            <html><body style="font-family: sans-serif; padding: 20px;">
+                <div style="max-width: 600px; margin: auto; border-radius: 10px; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {color};">
+                    <h2 style="color: #0f172a;">Audit Report: {dom}</h2>
+                    <div style="background: {color}; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0;">Score: {scr}/100</div>
+                    <p>MX: {mx} | SPF: {spf} | DMARC: {dm}</p>
+                    <p>DKIM: {dk} | Reputation: {rep}</p>
+                </div>
+            </body></html>
+            """
+            report_html = report_template.format(
+                color=s_color, dom=domain, scr=score, 
+                mx='PASS' if mx_s else 'FAIL', spf='PASS' if spf_s else 'FAIL',
+                dm='PASS' if dmarc_s else 'FAIL', dk='PASS' if dkim_s else 'FAIL',
+                rep='CLEAN' if black_s else 'BLACKLISTED'
+            )
+            
+            st.download_button(label="📥 Download Colorful Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
+
+            st.markdown("---")
+            if score < 100:
+                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
+                st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
+            else:
+                st.success("Great job! Your domain is healthy.")
+                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
+    else:
+        st.info("Please enter a domain name to begin.")
