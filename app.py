@@ -83,22 +83,23 @@ if st.button("🚀 Start Full Audit"):
         with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
             time.sleep(1.2)
             
-            # Variables for Scoring
             spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
             ip_display = "N/A"
 
-            # Results Display
             c1, c2 = st.columns(2)
             
             with c1:
                 st.subheader("🛡️ Authentication")
+                
+                # MX Check
                 mx_r = robust_query(domain, 'MX')
                 if mx_r:
-                    st.success(f"✅ MX Found: {mx_r[0].exchange}")
+                    st.success(f"✅ MX Found")
                     mx_s = True
                 else:
                     st.error("❌ MX Record Missing")
                 
+                # SPF Check
                 txt_r = robust_query(domain, 'TXT')
                 if txt_r:
                     spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
@@ -106,3 +107,51 @@ if st.button("🚀 Start Full Audit"):
                         st.success(f"✅ SPF Found")
                         spf_s = True
                     else:
+                        st.error("❌ SPF Record Missing")
+                else:
+                    st.error("❌ TXT Records Missing")
+                
+                # DMARC Check
+                dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
+                if dm_r:
+                    st.success(f"✅ DMARC Found")
+                    dmarc_s = True
+                else:
+                    st.warning("⚠️ DMARC Not Found")
+
+            with c2:
+                st.subheader("🚩 Reputation")
+                try:
+                    ip_display = socket.gethostbyname(domain)
+                    st.info(f"Domain IP: {ip_display}")
+                    rev = ".".join(reversed(ip_display.split(".")))
+                    try:
+                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
+                        st.error("⚠️ ALERT: IP Blacklisted!")
+                        black_s = False
+                    except:
+                        st.success("✅ IP is Clean")
+                except:
+                    st.error("Could not resolve IP.")
+
+            # 6. Scoring
+            st.divider()
+            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
+            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
+            st.subheader(f"📊 Your Health Score: {score}/100")
+            if score >= 80: st.balloons()
+
+            # 7. CTA
+            st.markdown("---")
+            if score < 100:
+                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
+                st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
+            else:
+                st.success("Great job! Your domain is healthy.")
+                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
+    else:
+        st.info("Please enter a domain name to begin.")
+
+# Sidebar Info
+st.sidebar.title("About")
+st.sidebar.info("This professional tool is powered by Email Solution Pro to help businesses achieve 100% inbox delivery.")
