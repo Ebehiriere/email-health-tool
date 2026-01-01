@@ -115,4 +115,68 @@ if st.button("🚀 Run Free Deliverability Audit"):
                 if mx_r:
                     st.success("✅ MX Found")
                     mx_s = True
-                else
+                else:
+                    st.error("❌ MX Record Missing")
+                
+                txt_r = robust_query(domain, 'TXT')
+                if txt_r:
+                    spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
+                    if spf_find:
+                        st.success("✅ SPF Found")
+                        spf_s = True
+                    else:
+                        st.error("❌ SPF Record Missing")
+                else:
+                    st.error("❌ TXT Records Missing")
+                
+                dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
+                if dm_r:
+                    st.success("✅ DMARC Found")
+                    dmarc_s = True
+                else:
+                    st.warning("⚠️ DMARC Not Found")
+
+                selectors = ['google', 'default', 'k1', 'smtp']
+                if custom_selector:
+                    selectors.insert(0, custom_selector.strip())
+
+                for sel in selectors:
+                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
+                    if dk_r:
+                        st.success(f"✅ DKIM Found ({sel})")
+                        dkim_s = True
+                        active_selector = sel
+                        break
+                if not dkim_s:
+                    st.info("ℹ️ DKIM: Selector not found")
+
+            with c2:
+                st.subheader("🚩 Reputation")
+                try:
+                    ip_display = socket.gethostbyname(domain)
+                    st.info(f"Domain IP: {ip_display}")
+                    rev = ".".join(reversed(ip_display.split(".")))
+                    try:
+                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
+                        st.error("⚠️ ALERT: IP Blacklisted!")
+                        black_s = False
+                    except:
+                        st.success("✅ IP is Clean (Spamhaus)")
+                except:
+                    st.error("Could not resolve IP address.")
+
+            st.divider()
+            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
+            st.subheader(f"📊 Your Health Score: {score}/100")
+            if score >= 80: st.balloons()
+
+            # --- Report Data ---
+            report_text = f"Audit Results for {domain}\nScore: {score}/100\nMX: {mx_s}\nSPF: {spf_s}\nDMARC: {dmarc_s}\nDKIM: {dkim_s}\nReputation: {black_s}"
+
+            # Download Button
+            st.download_button(
+                label="📥 Download Audit Report",
+                data=report_text,
+                file_name=f"Audit_{domain}.txt",
+                mime="text/plain"
+            )
