@@ -13,11 +13,14 @@ hide_st_style = """
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* --- AGGRESSIVE CSS TO REMOVE SIDEBAR TOGGLE --- */
-[data-testid="collapsedControl"], 
-button[kind="header"], 
-.st-emotion-cache-15ec669 {
+/* --- LOCK SIDEBAR & REMOVE TOGGLE --- */
+[data-testid="collapsedControl"] {
     display: none !important;
+}
+
+/* Ensure sidebar stays open on all devices */
+section[data-testid="stSidebar"] {
+    min-width: 250px !important;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
@@ -57,11 +60,10 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # 3. SIDEBAR: Logo & Navigation
 with st.sidebar:
-    # Adding the Logo at the top
     try:
         st.image("logo.png", use_container_width=True)
     except:
-        st.title("Email Solution Pro") # Fallback if image not found
+        st.title("Email Solution Pro")
     
     st.markdown("---")
     st.markdown("### 🛠️ More Free Tools")
@@ -85,11 +87,10 @@ st.markdown('<p class="main-title">Free Email Spam Test</p>', unsafe_allow_html=
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
 
-domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
+domain = st.text_input("Enter your domain", value="", placeholder="example.com")
 
 with st.expander("⚙️ Advanced: Manual DKIM Selector"):
-    custom_selector = st.text_input("Custom DKIM Selector (Optional)", placeholder="e.g., s1, mandrill")
-    st.markdown("Google: `google` | Microsoft: `selector1` | Others: check `selector._domainkey` host.")
+    custom_selector = st.text_input("Custom DKIM Selector (Optional)", placeholder="google")
 
 # DNS Setup
 resolver = dns.resolver.Resolver()
@@ -114,70 +115,17 @@ if st.button("🚀 Run Free Deliverability Audit"):
             with c1:
                 st.subheader("🛡️ Authentication")
                 mx_r = robust_query(domain, 'MX')
-                if mx_r:
-                    st.success("✅ MX Found")
-                    mx_s = True
-                else:
-                    st.error("❌ MX Record Missing")
+                if mx_r: mx_s = True; st.success("✅ MX Found")
+                else: st.error("❌ MX Record Missing")
                 
                 txt_r = robust_query(domain, 'TXT')
                 if txt_r:
                     spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
-                    if spf_find:
-                        st.success("✅ SPF Found")
-                        spf_s = True
-                    else:
-                        st.error("❌ SPF Record Missing")
-                else:
-                    st.error("❌ TXT Records Missing")
+                    if spf_find: spf_s = True; st.success("✅ SPF Found")
+                    else: st.error("❌ SPF Record Missing")
                 
                 dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
-                if dm_r:
-                    st.success("✅ DMARC Found")
-                    dmarc_s = True
-                else:
-                    st.warning("⚠️ DMARC Not Found")
+                if dm_r: dmarc_s = True; st.success("✅ DMARC Found")
+                else: st.warning("⚠️ DMARC Not Found")
 
-                selectors = ['google', 'default', 'k1', 'smtp', 'selector1']
-                if custom_selector:
-                    selectors.insert(0, custom_selector.strip())
-                for sel in selectors:
-                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
-                    if dk_r:
-                        st.success(f"✅ DKIM Found ({sel})")
-                        dkim_s = True
-                        active_selector = sel
-                        break
-                if not dkim_s:
-                    st.info("ℹ️ DKIM: Selector not found")
-
-            with c2:
-                st.subheader("🚩 Reputation")
-                try:
-                    ip_display = socket.gethostbyname(domain)
-                    st.info(f"Domain IP: {ip_display}")
-                    rev = ".".join(reversed(ip_display.split(".")))
-                    try:
-                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
-                        st.error("⚠️ ALERT: IP Blacklisted!")
-                        black_s = False
-                    except:
-                        st.success("✅ IP is Clean (Spamhaus)")
-                except:
-                    st.error("Could not resolve IP address.")
-
-            st.divider()
-            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
-            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
-            st.subheader(f"📊 Your Health Score: {score}/100")
-            if score >= 80: st.balloons()
-
-            # HTML Report Generation
-            report_html = f"""
-            <html><body style="font-family: sans-serif; padding: 20px;">
-                <div style="max-width: 600px; margin: auto; border-radius: 10px; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {s_color};">
-                    <h2 style="color: #0f172a;">Audit Report: {domain}</h2>
-                    <div style="background: {s_color}; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0;">Score: {score}/100</div>
-                    <p>MX: {'PASS' if mx_s else 'FAIL'} | SPF: {'PASS' if spf_s else 'FAIL'}</p>
-                    <p>DMARC: {'PASS' if dmarc_s else 'FAIL'} | DKIM: {'PASS' if dkim_s else 'FAIL'}</p>
-                    <p>Blacklist Status:
+                selectors = ['google', 'default', 'k1',
