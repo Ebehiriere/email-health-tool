@@ -4,18 +4,20 @@ import socket
 import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
+st.set_page_config(page_title="Free Email Spam Test | Email Solution Pro", page_icon="✉️")
 
-# 2. Premium White-Label CSS (Includes Sidebar Toggle Removal)
+# 2. Premium White-Label CSS (Locked Sidebar & Logo)
 hide_st_style = """
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* --- REMOVE SIDEBAR TOGGLE --- */
-[data-testid="collapsedControl"] {
-    display: none;
+/* --- AGGRESSIVE CSS TO REMOVE SIDEBAR TOGGLE --- */
+[data-testid="collapsedControl"], 
+button[kind="header"], 
+.st-emotion-cache-15ec669 {
+    display: none !important;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
@@ -30,28 +32,20 @@ html, body, [class*="css"], .stMarkdown {
     color: #0f172a !important;
     line-height: 1.1 !important;
     margin-bottom: 0px !important;
-    padding-bottom: 5px !important;
 }
 
 .sub-title {
     font-size: 20px !important;
     font-weight: 400 !important;
     color: #64748b !important;
-    letter-spacing: -0.5px !important;
     margin-top: -5px !important;
     margin-bottom: 15px !important;
 }
 
 .stButton>button {
-    width: 100%; 
-    border-radius: 8px; 
-    height: 3.5em; 
-    background-color: #1e293b; 
-    color: white; 
-    font-weight: bold;
-    font-size: 18px;
-    border: none;
-    transition: 0.3s;
+    width: 100%; border-radius: 8px; height: 3.5em; 
+    background-color: #1e293b; color: white; font-weight: bold;
+    font-size: 18px; border: none; transition: 0.3s;
 }
 .stButton>button:hover {
     background-color: #000000;
@@ -61,11 +55,15 @@ html, body, [class*="css"], .stMarkdown {
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. SIDEBAR: Multi-Tool Navigation
+# 3. SIDEBAR: Logo & Navigation
 with st.sidebar:
-    st.title("Email Solution Pro")
-    st.markdown("---")
+    # Adding the Logo at the top
+    try:
+        st.image("logo.png", use_container_width=True)
+    except:
+        st.title("Email Solution Pro") # Fallback if image not found
     
+    st.markdown("---")
     st.markdown("### 🛠️ More Free Tools")
     st.markdown("🏠 **[Email Health Audit](/)** (Current)")
     st.markdown("🔍 [Blacklist Monitor](https://emailsolutionpro.com/tools/blacklist)")
@@ -83,7 +81,7 @@ with st.sidebar:
     st.info("System Status: Online")
 
 # 4. Main Interface
-st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-title">Free Email Spam Test</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
 
@@ -174,7 +172,7 @@ if st.button("🚀 Run Free Deliverability Audit"):
             st.subheader(f"📊 Your Health Score: {score}/100")
             if score >= 80: st.balloons()
 
-            # --- COLORFUL HTML REPORT ---
+            # HTML Report Generation
             report_html = f"""
             <html><body style="font-family: sans-serif; padding: 20px;">
                 <div style="max-width: 600px; margin: auto; border-radius: 10px; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {s_color};">
@@ -182,18 +180,4 @@ if st.button("🚀 Run Free Deliverability Audit"):
                     <div style="background: {s_color}; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0;">Score: {score}/100</div>
                     <p>MX: {'PASS' if mx_s else 'FAIL'} | SPF: {'PASS' if spf_s else 'FAIL'}</p>
                     <p>DMARC: {'PASS' if dmarc_s else 'FAIL'} | DKIM: {'PASS' if dkim_s else 'FAIL'}</p>
-                    <p>Blacklist Status: {'CLEAN' if black_s else 'BLACKLISTED'}</p>
-                </div>
-            </body></html>
-            """
-            st.download_button(label="📥 Download Colorful Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
-
-            st.markdown("---")
-            if score < 100:
-                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
-                st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
-            else:
-                st.success("Great job! Your domain is healthy.")
-                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
-    else:
-        st.info("Please enter a domain name to begin.")
+                    <p>Blacklist Status:
