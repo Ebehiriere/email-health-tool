@@ -10,7 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Enhanced Modern Styling
+# 2. Email Solution Pro Brand Styling
 hide_st_style = """
 <style>
     /* Hide Streamlit branding */
@@ -33,14 +33,36 @@ hide_st_style = """
         max-width: 900px;
     }
     
-    /* Gradient background for header section */
+    /* Brand color variables - Email Solution Pro */
+    :root {
+        --primary-blue: #1e40af;
+        --secondary-blue: #3b82f6;
+        --accent-blue: #60a5fa;
+        --dark-blue: #1e3a8a;
+        --light-blue: #dbeafe;
+        --success-green: #10b981;
+        --warning-orange: #f59e0b;
+        --error-red: #ef4444;
+    }
+    
+    /* Gradient background for header section - Brand Blues */
     .header-container {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         padding: 3rem 2rem;
         border-radius: 20px;
         margin-bottom: 2.5rem;
-        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 20px 60px rgba(30, 64, 175, 0.3);
         text-align: center;
+    }
+    
+    /* Logo styling */
+    .logo-container {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
     
     /* Main title */
@@ -58,7 +80,7 @@ hide_st_style = """
     .sub-title {
         font-size: 20px !important;
         font-weight: 400 !important;
-        color: rgba(255, 255, 255, 0.9) !important;
+        color: rgba(255, 255, 255, 0.95) !important;
         letter-spacing: 0.5px !important;
         margin-top: 0 !important;
     }
@@ -66,7 +88,7 @@ hide_st_style = """
     /* Input field styling */
     .stTextInput > div > div > input {
         border-radius: 12px;
-        border: 2px solid #e2e8f0;
+        border: 2px solid #dbeafe;
         padding: 1rem;
         font-size: 16px;
         transition: all 0.3s ease;
@@ -74,28 +96,29 @@ hide_st_style = """
     }
     
     .stTextInput > div > div > input:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
-    /* Button styling */
+    /* Button styling - Brand colors */
     .stButton > button {
         width: 100%;
         border-radius: 12px;
         height: 3.5rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
         font-weight: 700;
         font-size: 18px;
         border: none;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
         margin-top: 1rem;
     }
     
     .stButton > button:hover {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
         transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        box-shadow: 0 6px 25px rgba(30, 64, 175, 0.5);
     }
     
     /* Card styling for results */
@@ -110,20 +133,20 @@ hide_st_style = """
     
     /* Subheader styling */
     .stSubheader, h3 {
-        color: #1e293b !important;
+        color: #1e40af !important;
         font-weight: 700 !important;
         font-size: 22px !important;
         margin-bottom: 1rem !important;
     }
     
-    /* Score display */
+    /* Score display - Brand colors */
     .score-container {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         border-radius: 16px;
         padding: 2rem;
         text-align: center;
         margin: 2rem 0;
-        box-shadow: 0 8px 30px rgba(240, 147, 251, 0.3);
+        box-shadow: 0 8px 30px rgba(30, 64, 175, 0.3);
     }
     
     .score-text {
@@ -136,15 +159,33 @@ hide_st_style = """
     
     .score-label {
         font-size: 18px;
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(255, 255, 255, 0.95);
         margin-top: 8px;
     }
     
-    /* Alert boxes */
-    .stSuccess, .stError, .stWarning, .stInfo {
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        margin: 0.5rem 0;
+    /* Alert boxes - Brand color adjustments */
+    .stSuccess {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        border-left: 4px solid #10b981 !important;
+    }
+    
+    .stError {
+        background-color: #fee2e2 !important;
+        color: #991b1b !important;
+        border-left: 4px solid #ef4444 !important;
+    }
+    
+    .stWarning {
+        background-color: #fef3c7 !important;
+        color: #92400e !important;
+        border-left: 4px solid #f59e0b !important;
+    }
+    
+    .stInfo {
+        background-color: #dbeafe !important;
+        color: #1e3a8a !important;
+        border-left: 4px solid #3b82f6 !important;
     }
     
     /* Divider styling */
@@ -152,55 +193,79 @@ hide_st_style = """
         margin: 2rem 0;
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        background: linear-gradient(90deg, transparent, #dbeafe, transparent);
     }
     
-    /* Link button styling */
+    /* Link button styling - Brand colors */
     .stLinkButton > a {
-        border-radius: 10px;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        color: white !important;
+        border-radius: 10px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+        display: inline-block !important;
     }
     
-    /* Sidebar styling */
+    .stLinkButton > a:hover {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* Sidebar styling - Brand colors */
     .css-1d391kg, [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+        background: linear-gradient(180deg, #f0f9ff 0%, #dbeafe 100%);
     }
     
-    /* Spinner customization */
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+        color: #1e40af !important;
+    }
+    
+    /* Spinner customization - Brand color */
     .stSpinner > div {
-        border-top-color: #667eea !important;
-    }
-    
-    /* Logo container */
-    .logo-container {
-        text-align: center;
-        margin-bottom: 2rem;
+        border-top-color: #3b82f6 !important;
     }
     
     /* Input label */
     .stTextInput > label {
         font-weight: 600 !important;
-        color: #334155 !important;
+        color: #1e40af !important;
         font-size: 16px !important;
         margin-bottom: 0.5rem !important;
+    }
+    
+    /* Balloons override for brand colors */
+    .stBalloon {
+        background: #3b82f6 !important;
     }
 </style>
 """
 
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. Header Section
+# 3. Logo Section
+try:
+    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+    st.image("https://emailsolutionpro.com/wp-content/uploads/2025/12/LogoMakr-7if6kh.png", width=300)
+    st.markdown('</div>', unsafe_allow_html=True)
+except:
+    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+    try:
+        st.image("logo.png", width=300)
+    except:
+        st.markdown("### Email Solution Pro")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# 4. Header Section
 st.markdown("""
 <div class="header-container">
-    <p class="main-title">✉️ Email Deliverability Checker</p>
-    <p class="sub-title">Instant Authentication & Reputation Analysis</p>
+    <p class="main-title">✉️ Free Email Deliverability Checker</p>
+    <p class="sub-title">Professional Authentication & Reputation Analysis</p>
 </div>
 """, unsafe_allow_html=True)
 
-# 4. Input Section
+# 5. Input Section
 domain = st.text_input(
     "🌐 Enter Your Domain",
     value="",
@@ -224,7 +289,7 @@ def robust_query(query_domain, record_type):
             continue
     return None
 
-# 5. Audit Logic
+# 6. Audit Logic
 if st.button("🚀 Run Free Deliverability Audit"):
     if domain:
         with st.spinner('🔍 Analyzing your email configuration...'):
@@ -308,17 +373,12 @@ if st.button("🚀 Run Free Deliverability Audit"):
             # Calculate Score
             score = sum([mx_status, spf_status, dmarc_status, dkim_status, blacklist_clean]) * 20
             
-            # Score Display
+            # Score Display - Always use brand colors
             if score >= 80:
-                gradient = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
                 st.balloons()
-            elif score >= 60:
-                gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
-            else:
-                gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
             
             st.markdown(f"""
-            <div class="score-container" style="background: {gradient};">
+            <div class="score-container">
                 <p class="score-text">{score}/100</p>
                 <p class="score-label">Deliverability Health Score</p>
             </div>
@@ -343,37 +403,52 @@ if st.button("🚀 Run Free Deliverability Audit"):
                 if missing_items:
                     st.markdown(f"**Missing/Issues:** {', '.join(missing_items)}")
                 
-                st.link_button("🔧 Fix My Email Deliverability", "https://emailsolutionpro.com/contact")
+                st.link_button("🔧 Fix My Email Deliverability Now", "https://emailsolutionpro.com/contact")
             else:
                 st.success("🎉 **Excellent!** Your domain is fully configured for optimal deliverability.")
                 st.link_button("💬 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
     else:
         st.info("👆 Please enter a domain name to begin the analysis.")
 
-# Sidebar
+# Sidebar - Brand styled
 with st.sidebar:
     try:
-        st.image("logo.png", use_container_width=True)
+        st.image("https://emailsolutionpro.com/wp-content/uploads/2025/12/LogoMakr-7if6kh.png", use_container_width=True)
     except:
-        st.markdown("### Email Solution Pro")
+        try:
+            st.image("logo.png", use_container_width=True)
+        except:
+            st.markdown("### Email Solution Pro")
     
     st.markdown("---")
     st.subheader("📊 About This Tool")
     st.info(
-        "This free tool checks your domain's email authentication records "
-        "(MX, SPF, DKIM, DMARC) and reputation status to help diagnose "
-        "deliverability issues and prevent emails from landing in spam folders."
+        "Professional email deliverability checker by Email Solution Pro. "
+        "This free tool analyzes your domain's authentication records "
+        "(MX, SPF, DKIM, DMARC) and reputation to ensure optimal email delivery."
     )
     
     st.markdown("---")
     st.subheader("🎯 What We Check")
     st.markdown("""
     - **MX Records**: Mail server configuration
-    - **SPF**: Sender authentication
-    - **DKIM**: Email signing
-    - **DMARC**: Email policy
-    - **Blacklist**: IP reputation
+    - **SPF**: Sender Policy Framework
+    - **DKIM**: DomainKeys Identified Mail
+    - **DMARC**: Domain-based Message Authentication
+    - **Blacklist**: IP reputation status
     """)
     
     st.markdown("---")
-    st.caption("Made with ❤️ by Email Solution Pro")
+    st.subheader("🚀 Our Services")
+    st.markdown("""
+    - Professional Email Setup
+    - Spam Protection & Security
+    - Email Management
+    - Inbox Cleanup & Organization
+    - Email Marketing
+    - Migration Services
+    """)
+    
+    st.markdown("---")
+    st.caption("© 2025 Email Solution Pro | Professional Email Solutions")
+    st.link_button("Visit Our Website", "https://emailsolutionpro.com")
