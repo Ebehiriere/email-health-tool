@@ -5,178 +5,208 @@ import time
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", 
+    page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro",
     page_icon="✉️",
-    layout="wide"
+    layout="centered"
 )
 
-# 2. Enhanced Styling with Modern Design
+# 2. Enhanced Modern Styling
 hide_st_style = """
 <style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-
-/* High-end Font Stack */
-html, body, [class*="css"], .stMarkdown {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-/* Container Styling */
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    max-width: 1200px;
-}
-
-/* Main Header Styling */
-.main-title {
-    font-size: 48px !important;
-    font-weight: 800 !important;
-    letter-spacing: -2px !important;
-    color: #0f172a !important;
-    line-height: 1.1 !important;
-    margin-bottom: 8px !important;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Sub-title Styling */
-.sub-title {
-    font-size: 22px !important;
-    font-weight: 500 !important;
-    color: #64748b !important;
-    letter-spacing: -0.3px !important;
-    margin-top: 0px !important;
-    margin-bottom: 32px !important;
-}
-
-/* Input Field Enhancement */
-.stTextInput > div > div > input {
-    border-radius: 12px !important;
-    border: 2px solid #e2e8f0 !important;
-    padding: 16px 20px !important;
-    font-size: 16px !important;
-    transition: all 0.3s ease !important;
-}
-
-.stTextInput > div > div > input:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-}
-
-/* Custom Button Styling */
-.stButton>button {
-    width: 100%; 
-    border-radius: 12px !important;
-    height: 58px !important;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-    color: white !important;
-    font-weight: 600 !important;
-    font-size: 18px !important;
-    border: none !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25) !important;
-    letter-spacing: 0.3px !important;
-}
-
-.stButton>button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.35) !important;
-}
-
-/* Card Styling for Results */
-.result-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
-    border: 1px solid #f1f5f9;
-    margin-bottom: 20px;
-}
-
-/* Score Display */
-.score-badge {
-    display: inline-block;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-size: 32px;
-    font-weight: 700;
-    margin: 16px 0;
-}
-
-/* Divider Styling */
-hr {
-    margin: 32px 0 !important;
-    border: none !important;
-    height: 1px !important;
-    background: linear-gradient(to right, transparent, #e2e8f0, transparent) !important;
-}
-
-/* Subheader Enhancement */
-.stMarkdown h3 {
-    font-size: 20px !important;
-    font-weight: 700 !important;
-    color: #1e293b !important;
-    margin-bottom: 20px !important;
-    letter-spacing: -0.5px !important;
-}
-
-/* Success/Error/Warning Messages */
-.element-container div[data-testid="stMarkdownContainer"] p {
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    padding: 4px 0 !important;
-}
-
-/* Link Button Styling */
-.stButton > button[kind="secondary"] {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
-}
-
-/* Info boxes */
-div[data-testid="stAlert"] {
-    border-radius: 12px !important;
-    border-left-width: 4px !important;
-}
-
-/* Sidebar Enhancement */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%) !important;
-}
-
-section[data-testid="stSidebar"] > div {
-    padding-top: 2rem !important;
-}
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Import modern font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Global font application */
+    html, body, [class*="css"], .stMarkdown, .stTextInput, .stButton {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    /* Main container styling */
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        max-width: 900px;
+    }
+    
+    /* Gradient background for header section */
+    .header-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        text-align: center;
+    }
+    
+    /* Main title */
+    .main-title {
+        font-size: 48px !important;
+        font-weight: 800 !important;
+        letter-spacing: -2px !important;
+        color: #ffffff !important;
+        line-height: 1.1 !important;
+        margin-bottom: 12px !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    /* Subtitle */
+    .sub-title {
+        font-size: 20px !important;
+        font-weight: 400 !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        letter-spacing: 0.5px !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Input field styling */
+    .stTextInput > div > div > input {
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        padding: 1rem;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        width: 100%;
+        border-radius: 12px;
+        height: 3.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        margin-top: 1rem;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+    }
+    
+    /* Card styling for results */
+    .result-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f1f5f9;
+    }
+    
+    /* Subheader styling */
+    .stSubheader, h3 {
+        color: #1e293b !important;
+        font-weight: 700 !important;
+        font-size: 22px !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Score display */
+    .score-container {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        margin: 2rem 0;
+        box-shadow: 0 8px 30px rgba(240, 147, 251, 0.3);
+    }
+    
+    .score-text {
+        font-size: 48px;
+        font-weight: 800;
+        color: white;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .score-label {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        margin-top: 8px;
+    }
+    
+    /* Alert boxes */
+    .stSuccess, .stError, .stWarning, .stInfo {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    /* Divider styling */
+    hr {
+        margin: 2rem 0;
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+    
+    /* Link button styling */
+    .stLinkButton > a {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    /* Sidebar styling */
+    .css-1d391kg, [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    
+    /* Spinner customization */
+    .stSpinner > div {
+        border-top-color: #667eea !important;
+    }
+    
+    /* Logo container */
+    .logo-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    /* Input label */
+    .stTextInput > label {
+        font-weight: 600 !important;
+        color: #334155 !important;
+        font-size: 16px !important;
+        margin-bottom: 0.5rem !important;
+    }
 </style>
 """
+
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. Header Section with Logo
-col1, col2, col3 = st.columns([1, 3, 1])
-with col2:
-    try:
-        st.image("logo.png", width=320)
-    except:
-        st.markdown("### Email Solution Pro")
-    
-    st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
+# 3. Header Section
+st.markdown("""
+<div class="header-container">
+    <p class="main-title">✉️ Email Deliverability Checker</p>
+    <p class="sub-title">Instant Authentication & Reputation Analysis</p>
+</div>
+""", unsafe_allow_html=True)
 
-# 4. Input Section with Better Layout
-col_left, col_center, col_right = st.columns([1, 6, 1])
-with col_center:
-    domain = st.text_input(
-        "Enter your domain to check records", 
-        value="", 
-        placeholder="example.com",
-        label_visibility="collapsed"
-    )
-    st.caption("💡 Enter your sending domain (e.g., yourdomain.com) to analyze email authentication and reputation")
-
-st.write("")  # Spacing
+# 4. Input Section
+domain = st.text_input(
+    "🌐 Enter Your Domain",
+    value="",
+    placeholder="example.com",
+    help="Enter your domain without http:// or www"
+)
 
 # DNS Setup
 resolver = dns.resolver.Resolver()
@@ -185,6 +215,7 @@ resolver.timeout = 5
 resolver.lifetime = 5
 
 def robust_query(query_domain, record_type):
+    """Robust DNS query with retry logic"""
     for _ in range(3):
         try:
             return resolver.resolve(query_domain, record_type)
@@ -193,156 +224,156 @@ def robust_query(query_domain, record_type):
             continue
     return None
 
-# 5. Audit Button
-col_btn_left, col_btn_center, col_btn_right = st.columns([2, 4, 2])
-with col_btn_center:
-    audit_button = st.button("🚀 Run Free Deliverability Audit")
-
-# 6. Audit Logic with Enhanced Display
-if audit_button:
+# 5. Audit Logic
+if st.button("🚀 Run Free Deliverability Audit"):
     if domain:
-        with st.spinner('🔍 Analyzing your email infrastructure...'):
-            time.sleep(1.2)
+        with st.spinner('🔍 Analyzing your email configuration...'):
+            time.sleep(1)
             
-            spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
-            ip_display = "N/A"
+            # Initialize results
+            spf_status, dmarc_status, mx_status, dkim_status, blacklist_clean = False, False, False, False, True
+            ip_address = "N/A"
             
-            st.markdown("---")
-            
-            # Results in cleaner columns
-            col1, col2 = st.columns(2, gap="large")
+            # Create two columns for results
+            col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown("### 🛡️ Email Authentication")
-                st.write("")
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
+                st.subheader("🛡️ Authentication Records")
                 
-                # MX Record
-                mx_r = robust_query(domain, 'MX')
-                if mx_r:
-                    st.success("✅ **MX Record** - Configured correctly")
-                    mx_s = True
+                # MX Record Check
+                mx_result = robust_query(domain, 'MX')
+                if mx_result:
+                    st.success("✅ MX Record: Configured")
+                    mx_status = True
                 else:
-                    st.error("❌ **MX Record** - Missing or misconfigured")
+                    st.error("❌ MX Record: Missing")
                 
-                # SPF Record
-                txt_r = robust_query(domain, 'TXT')
-                if txt_r:
-                    spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
-                    if spf_find:
-                        st.success("✅ **SPF Record** - Found and active")
-                        spf_s = True
+                # SPF Record Check
+                txt_result = robust_query(domain, 'TXT')
+                if txt_result:
+                    spf_records = [r.to_text() for r in txt_result if "v=spf1" in r.to_text()]
+                    if spf_records:
+                        st.success("✅ SPF Record: Configured")
+                        spf_status = True
                     else:
-                        st.error("❌ **SPF Record** - Not configured")
+                        st.error("❌ SPF Record: Missing")
                 else:
-                    st.error("❌ **TXT Records** - No DNS records found")
+                    st.error("❌ TXT Records: Not Found")
                 
-                # DMARC Record
-                dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
-                if dm_r:
-                    st.success("✅ **DMARC Policy** - Configured")
-                    dmarc_s = True
+                # DMARC Record Check
+                dmarc_result = robust_query(f"_dmarc.{domain}", 'TXT')
+                if dmarc_result:
+                    st.success("✅ DMARC Record: Configured")
+                    dmarc_status = True
                 else:
-                    st.warning("⚠️ **DMARC Policy** - Not found (recommended)")
+                    st.warning("⚠️ DMARC Record: Not Found")
                 
-                # DKIM Record
-                for sel in ['google', 'default', 'k1', 'smtp', 'selector1', 'selector2']:
-                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
-                    if dk_r:
-                        st.success(f"✅ **DKIM Signature** - Active (selector: {sel})")
-                        dkim_s = True
+                # DKIM Record Check
+                selectors = ['google', 'default', 'k1', 'smtp', 'selector1', 'selector2']
+                for selector in selectors:
+                    dkim_result = robust_query(f"{selector}._domainkey.{domain}", 'TXT')
+                    if dkim_result:
+                        st.success(f"✅ DKIM Record: Found ({selector})")
+                        dkim_status = True
                         break
-                if not dkim_s:
-                    st.info("ℹ️ **DKIM Signature** - Not found with common selectors")
-
+                
+                if not dkim_status:
+                    st.info("ℹ️ DKIM: Not found (may use custom selector)")
+                
+                st.markdown('</div>', unsafe_allow_html=True)
+            
             with col2:
-                st.markdown("### 🚩 Domain Reputation")
-                st.write("")
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
+                st.subheader("🔍 Reputation Check")
                 
+                # IP Resolution
                 try:
-                    ip_display = socket.gethostbyname(domain)
-                    st.info(f"**Domain IP Address:** `{ip_display}`")
+                    ip_address = socket.gethostbyname(domain)
+                    st.info(f"📍 Domain IP: `{ip_address}`")
                     
-                    # Blacklist Check
-                    rev = ".".join(reversed(ip_display.split(".")))
+                    # Blacklist Check (Spamhaus)
+                    reversed_ip = ".".join(reversed(ip_address.split(".")))
                     try:
-                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
-                        st.error("⚠️ **CRITICAL:** IP is blacklisted on Spamhaus")
-                        black_s = False
+                        resolver.resolve(f"{reversed_ip}.zen.spamhaus.org", 'A')
+                        st.error("🚨 ALERT: IP is Blacklisted!")
+                        blacklist_clean = False
                     except:
-                        st.success("✅ **Blacklist Status** - Clean (Spamhaus)")
-                    
-                    st.write("")
-                    st.markdown("**Additional Checks:**")
-                    st.caption("✓ No major spam reports detected")
-                    st.caption("✓ Domain age appears legitimate")
-                    
+                        st.success("✅ IP Clean (Spamhaus)")
                 except:
-                    st.error("❌ **Domain Resolution** - Could not resolve IP address")
-
-            # Score Calculation and Display
-            st.markdown("---")
-            st.write("")
-            
-            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
-            s_color = "#10b981" if score >= 80 else "#f59e0b" if score >= 60 else "#ef4444"
-            
-            # Centered Score Display
-            score_col1, score_col2, score_col3 = st.columns([1, 2, 1])
-            with score_col2:
-                st.markdown(f"""
-                <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); 
-                     border-radius: 20px; border: 2px solid {s_color}20;">
-                    <h2 style="color: #1e293b; margin-bottom: 10px; font-size: 24px;">Email Health Score</h2>
-                    <div style="font-size: 64px; font-weight: 800; color: {s_color}; line-height: 1;">
-                        {score}<span style="font-size: 36px; color: #94a3b8;">/100</span>
-                    </div>
-                    <p style="color: #64748b; margin-top: 12px; font-size: 16px;">
-                        {"🎉 Excellent! Your setup is optimized." if score >= 80 else 
-                         "⚠️ Good, but needs improvement." if score >= 60 else 
-                         "🚨 Critical issues detected!"}
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
+                    st.error("❌ Could not resolve IP address")
                 
-                if score >= 80:
-                    st.balloons()
+                st.markdown('</div>', unsafe_allow_html=True)
             
-            st.write("")
-            st.markdown("---")
+            # Calculate Score
+            score = sum([mx_status, spf_status, dmarc_status, dkim_status, blacklist_clean]) * 20
             
-            # CTA Section
-            cta_col1, cta_col2, cta_col3 = st.columns([1, 3, 1])
-            with cta_col2:
-                if score < 100:
-                    st.warning("**🚨 Action Required:** Your emails may be landing in spam folders, hurting your deliverability and sender reputation.")
-                    st.write("")
-                    st.link_button("👉 Fix My Deliverability Issues Now", "https://emailsolutionpro.com/contact", use_container_width=True)
-                else:
-                    st.success("**🎉 Excellent!** Your domain authentication is properly configured.")
-                    st.write("")
-                    st.link_button("👉 Get Advanced Email Solutions", "https://emailsolutionpro.com/contact", use_container_width=True)
+            # Score Display
+            if score >= 80:
+                gradient = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
+                st.balloons()
+            elif score >= 60:
+                gradient = "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+            else:
+                gradient = "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
+            
+            st.markdown(f"""
+            <div class="score-container" style="background: {gradient};">
+                <p class="score-text">{score}/100</p>
+                <p class="score-label">Deliverability Health Score</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Recommendations
+            if score < 100:
+                st.warning("⚠️ **Action Required:** Issues detected that may affect email deliverability.")
                 
+                missing_items = []
+                if not mx_status:
+                    missing_items.append("MX Records")
+                if not spf_status:
+                    missing_items.append("SPF Record")
+                if not dmarc_status:
+                    missing_items.append("DMARC Record")
+                if not dkim_status:
+                    missing_items.append("DKIM Record")
+                if not blacklist_clean:
+                    missing_items.append("Blacklist Status")
+                
+                if missing_items:
+                    st.markdown(f"**Missing/Issues:** {', '.join(missing_items)}")
+                
+                st.link_button("🔧 Fix My Email Deliverability", "https://emailsolutionpro.com/contact")
+            else:
+                st.success("🎉 **Excellent!** Your domain is fully configured for optimal deliverability.")
+                st.link_button("💬 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
     else:
-        st.info("👆 Please enter a domain name above to begin your free email deliverability audit.")
+        st.info("👆 Please enter a domain name to begin the analysis.")
 
-# Enhanced Sidebar
-st.sidebar.image("logo.png", use_container_width=True)
-st.sidebar.markdown("---")
-st.sidebar.title("About This Tool")
-st.sidebar.info(
-    "**Email Solution Pro's** free deliverability checker verifies domain authentication "
-    "(MX, SPF, DKIM, DMARC), analyzes spam scores, and diagnoses inbox placement issues instantly.\n\n"
-    "💯 **100% Free** • ⚡ **Instant Results** • 🔒 **Secure Analysis**"
-)
-
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 📚 Resources")
-st.sidebar.markdown("""
-- [Email Deliverability Guide](https://emailsolutionpro.com)
-- [SPF Record Setup](https://emailsolutionpro.com)
-- [DKIM Configuration](https://emailsolutionpro.com)
-- [DMARC Best Practices](https://emailsolutionpro.com)
-""")
-
-st.sidebar.markdown("---")
-st.sidebar.caption("© 2024 Email Solution Pro. All rights reserved.")
+# Sidebar
+with st.sidebar:
+    try:
+        st.image("logo.png", use_container_width=True)
+    except:
+        st.markdown("### Email Solution Pro")
+    
+    st.markdown("---")
+    st.subheader("📊 About This Tool")
+    st.info(
+        "This free tool checks your domain's email authentication records "
+        "(MX, SPF, DKIM, DMARC) and reputation status to help diagnose "
+        "deliverability issues and prevent emails from landing in spam folders."
+    )
+    
+    st.markdown("---")
+    st.subheader("🎯 What We Check")
+    st.markdown("""
+    - **MX Records**: Mail server configuration
+    - **SPF**: Sender authentication
+    - **DKIM**: Email signing
+    - **DMARC**: Email policy
+    - **Blacklist**: IP reputation
+    """)
+    
+    st.markdown("---")
+    st.caption("Made with ❤️ by Email Solution Pro")
