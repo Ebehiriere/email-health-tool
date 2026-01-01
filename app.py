@@ -152,7 +152,7 @@ if st.button("🚀 Run Free Deliverability Audit"):
                         st.error("⚠️ ALERT: IP is Blacklisted!")
                         black_s = False
                     except:
-                        st.success("✅ IP is Clean")
+                        st.success("✅ IP is Clean (Spamhaus)")
                 except:
                     st.error("Could not resolve IP address.")
 
@@ -196,3 +196,4 @@ if st.button("🚀 Run Free Deliverability Audit"):
 st.sidebar.image("logo.png", use_container_width=True)
 st.sidebar.title("About")
 st.sidebar.info("Professional tool by Email Solution Pro.")
+
