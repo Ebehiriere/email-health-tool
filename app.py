@@ -6,16 +6,12 @@ import time
 # 1. Page Configuration
 st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
 
-# 2. White Label & Professional Styling
+# 2. White Label: Hide Streamlit Menu and Footer
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
-            
-            /* Modern Font and Background */
-            .stApp { background-color: #fcfcfd; }
-            
             /* Custom styling for the audit button */
             .stButton>button {
                 width: 100%; 
@@ -29,29 +25,20 @@ hide_st_style = """
                 transition: 0.3s;
             }
             .stButton>button:hover {
-                background-color: #0f172a;
+                background-color: #000000;
                 transform: translateY(-2px);
-            }
-            
-            /* Professional Card Look */
-            .result-card {
-                background-color: white;
-                padding: 20px;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-                border: 1px solid #f0f1f3;
-                margin-bottom: 20px;
             }
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. Logo and SEO Header
+# 3. Logo and Header
 try:
-    st.image("logo.png", width=400)
+    st.image("logo.png", width=350)
 except:
-    st.title("Email Solution Pro")
+    st.title("Email Solution Pro") 
 
+# This is the updated SEO-friendly name
 st.markdown("# Free Email Spam Test & Deliverability Checker")
 st.markdown("### Technical Email Health Audit")
 st.divider()
@@ -75,7 +62,7 @@ def robust_query(query_domain, record_type):
     return None
 
 # 5. Audit Logic
-if st.button("🚀 Start My Free Audit"):
+if st.button("🚀 Run Free Deliverability Audit"):
     if domain:
         with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
             time.sleep(1.2)
@@ -84,11 +71,10 @@ if st.button("🚀 Start My Free Audit"):
             spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
             ip_display = "N/A"
 
-            # Results Display in Professional Cards
+            # Results Display
             c1, c2 = st.columns(2)
             
             with c1:
-                st.markdown('<div class="result-card">', unsafe_allow_html=True)
                 st.subheader("🛡️ Authentication")
                 
                 # MX Check
@@ -126,10 +112,8 @@ if st.button("🚀 Start My Free Audit"):
                         break
                 if not dkim_s:
                     st.info("ℹ️ DKIM: Custom selector in use?")
-                st.markdown('</div>', unsafe_allow_html=True)
 
             with c2:
-                st.markdown('<div class="result-card">', unsafe_allow_html=True)
                 st.subheader("🚩 Reputation")
                 try:
                     ip_display = socket.gethostbyname(domain)
@@ -144,7 +128,6 @@ if st.button("🚀 Start My Free Audit"):
                         st.success("✅ IP is Clean (Spamhaus)")
                 except:
                     st.error("Could not resolve IP address.")
-                st.markdown('</div>', unsafe_allow_html=True)
 
             # 6. Scoring & Visuals
             st.divider()
@@ -179,19 +162,14 @@ if st.button("🚀 Start My Free Audit"):
                 mime="text/html"
             )
             
-            # 8. Business Call to Action (The Final Catchy CTA)
-            st.markdown("<br>", unsafe_allow_html=True)
+            # 8. Business Call to Action (The Conversion Button)
+            st.markdown("---")
             if score < 100:
-                st.markdown(f"""
-                <div style="background-color: #fff4f4; padding: 20px; border-radius: 10px; border: 1px solid #ffcccc; text-align: center;">
-                    <h3>🚨 Your Deliverability is at Risk</h3>
-                    <p>We detected issues that could send your emails to spam folders. Let our experts fix your setup today.</p>
-                </div>
-                """, unsafe_allow_html=True)
+                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
                 st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
             else:
-                st.success("Your email health is looking great! Want to maintain 100% inbox placement?")
-                st.link_button("Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
+                st.success("Great job! Your domain is healthy. Need professional management?")
+                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
                 
     else:
         st.info("Please enter a domain name to begin.")
