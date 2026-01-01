@@ -214,24 +214,40 @@ if st.button("🚀 Run Free Deliverability Audit"):
         st.info("Please enter a domain name to begin.")
 
 
-# 6. Custom Professional Footer
+# 6. Custom Professional Footer (Email Solution Pro Brand Match)
 st.markdown("""
     <style>
     .footer {
         position: fixed;
-        left: 300px; /* Aligned with your locked sidebar width */
+        left: 300px;
         bottom: 0;
         width: calc(100% - 300px);
-        background-color: white;
-        color: #94a3b8;
+        background-color: #0f172a; /* Deep Slate Navy */
+        color: #ffffff;
         text-align: center;
-        padding: 15px;
+        padding: 20px;
         font-size: 14px;
-        border-top: 1px solid #e2e8f0;
-        z-index: 999;
+        font-family: 'Inter', sans-serif;
+        z-index: 1000;
+        border-top: 1px solid #1e293b;
     }
     
-    /* Adjust footer for mobile if sidebar collapses */
+    .footer a {
+        color: #38bdf8; /* Brand Light Blue */
+        text-decoration: none;
+        font-weight: 600;
+        margin: 0 10px;
+    }
+    
+    .footer a:hover {
+        text-decoration: underline;
+    }
+
+    /* Padding for the main content so it doesn't get hidden behind footer */
+    .main .block-container {
+        padding-bottom: 100px !important;
+    }
+    
     @media (max-width: 768px) {
         .footer {
             left: 0;
@@ -240,9 +256,11 @@ st.markdown("""
     }
     </style>
     <div class="footer">
-        © 2026 <b>Email Solution Pro</b> | 
-        <a href="https://emailsolutionpro.com/privacy" style="color: #94a3b8; text-decoration: none;">Privacy</a> | 
-        <a href="https://emailsolutionpro.com/terms" style="color: #94a3b8; text-decoration: none;">Terms</a> |
-        Optimizing Deliverability for High-Volume Senders
+        <div>© 2026 <b>Email Solution Pro</b> | Precision Deliverability Engineering</div>
+        <div style="margin-top: 5px;">
+            <a href="https://emailsolutionpro.com">Official Website</a> | 
+            <a href="https://emailsolutionpro.com/privacy">Privacy Policy</a> | 
+            <a href="https://emailsolutionpro.com/contact">Support</a>
+        </div>
     </div>
 """, unsafe_allow_html=True)
