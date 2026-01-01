@@ -43,6 +43,7 @@ hide_st_style = """
             .stButton>button {
                 width: 100%; border-radius: 5px; height: 3em; 
                 background-color: #007bff; color: white;
+                font-weight: bold;
             }
             </style>
             """
@@ -54,7 +55,6 @@ try:
 except:
     st.title("Email Solution Pro") 
 
-# These use the custom CSS classes for a professional look
 st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
@@ -92,8 +92,6 @@ if st.button("🚀 Start Full Audit"):
             
             with c1:
                 st.subheader("🛡️ Authentication")
-                
-                # MX Check
                 mx_r = robust_query(domain, 'MX')
                 if mx_r:
                     st.success(f"✅ MX Found: {mx_r[0].exchange}")
@@ -101,7 +99,6 @@ if st.button("🚀 Start Full Audit"):
                 else:
                     st.error("❌ MX Record Missing")
                 
-                # SPF Check
                 txt_r = robust_query(domain, 'TXT')
                 if txt_r:
                     spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
@@ -109,82 +106,3 @@ if st.button("🚀 Start Full Audit"):
                         st.success(f"✅ SPF Found")
                         spf_s = True
                     else:
-                        st.error("❌ SPF Record Missing")
-                
-                # DMARC Check
-                dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
-                if dm_r:
-                    st.success(f"✅ DMARC Found")
-                    dmarc_s = True
-                else:
-                    st.warning("⚠️ DMARC Not Found")
-
-                # DKIM Check
-                for sel in ['google', 'default', 'k1', 'smtp']:
-                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
-                    if dk_r:
-                        st.success(f"✅ DKIM Found ({sel})")
-                        dkim_s = True
-                        break
-                if not dkim_s:
-                    st.info("ℹ️ DKIM: Custom selector in use?")
-
-            with c2:
-                st.subheader("🚩 Reputation")
-                try:
-                    ip_display = socket.gethostbyname(domain)
-                    st.info(f"Domain IP: {ip_display}")
-                    
-                    rev = ".".join(reversed(ip_display.split(".")))
-                    try:
-                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
-                        st.error("⚠️ ALERT: IP is Blacklisted!")
-                        black_s = False
-                    except:
-                        st.success("✅ IP is Clean (Spamhaus)")
-                except:
-                    st.error("Could not resolve IP address.")
-
-            # 6. Scoring & Visuals
-            st.divider()
-            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
-            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
-            
-            st.subheader(f"📊 Your Health Score: {score}/100")
-            if score >= 80: st.balloons()
-
-            # 7. Colorful Report Generation
-            report_html = f"""
-            <div style="font-family: Arial; border: 8px solid {s_color}; padding: 25px; border-radius: 15px;">
-                <h2 style="color: {s_color};">Email Health Audit Report</h2>
-                <p><b>Domain:</b> {domain} | <b>IP:</b> {ip_display}</p>
-                <hr>
-                <div style="font-size: 18px;">
-                    <p>{'✅' if mx_s else '❌'} MX Record</p>
-                    <p>{'✅' if spf_s else '❌'} SPF Record</p>
-                    <p>{'✅' if dmarc_s else '❌'} DMARC Record</p>
-                    <p>{'✅' if dkim_s else '❌'} DKIM Record</p>
-                    <p>{'✅' if black_s else '❌'} Clean Reputation</p>
-                </div>
-                <h3 style="color: {s_color};">Final Score: {score}/100</h3>
-                <p style="font-size: 14px;"><b>Need help fixing this?</b> Visit emailsolutionpro.com</p>
-            </div>
-            """
-
-            st.download_button(
-                label="📥 Download Detailed Report",
-                data=report_html,
-                file_name=f"Audit_{domain}.html",
-                mime="text/html"
-            )
-            
-            # 8. Business Call to Action
-            if score < 100:
-                st.warning("🚨 We detected issues that could send your emails to spam.")
-                st.link_button("Contact an Expert to Fix This", "https://emailsolutionpro.com/contact")
-    else:
-        st.info("Please enter a domain name to begin.")
-
-# Sidebar Info (Kept exactly as it was)
-st.sidebar.title("About")
-st.sidebar.info("This professional tool is powered by Email Solution Pro to help businesses achieve 100% inbox delivery.")
