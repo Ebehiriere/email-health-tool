@@ -56,7 +56,7 @@ html, body, [class*="css"], .stMarkdown {
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 3. Sidebar Implementation
+# 3. Sidebar Implementation (Fully Integrated)
 with st.sidebar:
     st.title("Email Solution Pro")
     st.markdown("---")
@@ -82,4 +82,112 @@ st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
 
-domain = st.text_input("Enter your domain
+domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
+
+with st.expander("⚙️ Advanced: Manual DKIM Selector"):
+    custom_selector = st.text_input("Custom DKIM Selector (Optional)", placeholder="e.g., s1, mandrill")
+    st.markdown("Google: `google` | Microsoft: `selector1` | Others: check `selector._domainkey` host.")
+
+# DNS Setup
+resolver = dns.resolver.Resolver()
+resolver.nameservers = ['8.8.8.8', '8.8.4.4']
+resolver.timeout = 5
+
+def robust_query(query_domain, record_type):
+    try:
+        return resolver.resolve(query_domain, record_type)
+    except:
+        return None
+
+# 5. Audit Logic
+if st.button("🚀 Run Free Deliverability Audit"):
+    if domain:
+        with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
+            time.sleep(1.2)
+            spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
+            active_selector = "None"
+            
+            c1, c2 = st.columns(2)
+            with c1:
+                st.subheader("🛡️ Authentication")
+                mx_r = robust_query(domain, 'MX')
+                if mx_r:
+                    st.success("✅ MX Found")
+                    mx_s = True
+                else:
+                    st.error("❌ MX Record Missing")
+                
+                txt_r = robust_query(domain, 'TXT')
+                if txt_r:
+                    spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
+                    if spf_find:
+                        st.success("✅ SPF Found")
+                        spf_s = True
+                    else:
+                        st.error("❌ SPF Record Missing")
+                else:
+                    st.error("❌ TXT Records Missing")
+                
+                dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
+                if dm_r:
+                    st.success("✅ DMARC Found")
+                    dmarc_s = True
+                else:
+                    st.warning("⚠️ DMARC Not Found")
+
+                selectors = ['google', 'default', 'k1', 'smtp', 'selector1']
+                if custom_selector:
+                    selectors.insert(0, custom_selector.strip())
+                for sel in selectors:
+                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
+                    if dk_r:
+                        st.success(f"✅ DKIM Found ({sel})")
+                        dkim_s = True
+                        active_selector = sel
+                        break
+                if not dkim_s:
+                    st.info("ℹ️ DKIM: Selector not found")
+
+            with c2:
+                st.subheader("🚩 Reputation")
+                try:
+                    ip_display = socket.gethostbyname(domain)
+                    st.info(f"Domain IP: {ip_display}")
+                    rev = ".".join(reversed(ip_display.split(".")))
+                    try:
+                        resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
+                        st.error("⚠️ ALERT: IP Blacklisted!")
+                        black_s = False
+                    except:
+                        st.success("✅ IP is Clean (Spamhaus)")
+                except:
+                    st.error("Could not resolve IP address.")
+
+            st.divider()
+            score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
+            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
+            st.subheader(f"📊 Your Health Score: {score}/100")
+            if score >= 80: st.balloons()
+
+            report_html = f"""
+            <html><body style="font-family: sans-serif; padding: 20px;">
+                <div style="max-width: 600px; margin: auto; border-radius: 10px; border: 1px solid #ddd; padding: 30px; border-top: 10px solid {s_color};">
+                    <h2>Email Audit: {domain}</h2>
+                    <div style="background: {s_color}; color: white; padding: 15px; text-align: center; font-size: 24px; font-weight: bold;">Score: {score}/100</div>
+                    <p>MX: {'PASS' if mx_s else 'FAIL'} | SPF: {'PASS' if spf_s else 'FAIL'}</p>
+                    <p>DMARC: {'PASS' if dmarc_s else 'FAIL'} | DKIM: {'PASS' if dkim_s else 'FAIL'}</p>
+                    <p>Blacklist Status: {'CLEAN' if black_s else 'BLACKLISTED'}</p>
+                </div>
+            </body></html>
+            """
+            st.download_button(label="📥 Download Colorful Audit Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
+
+            st.markdown("---")
+            if score < 100:
+                st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
+                st.link_button("👉 Fix My Deliverability Now", "https://emailsolutionpro.com/contact")
+            else:
+                st.success("Great job! Your domain is healthy.")
+                st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
+    else:
+        st.info("Please enter a domain name to begin.")
