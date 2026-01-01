@@ -4,32 +4,67 @@ import socket
 import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="Email Health Tool | Email Solution Pro", page_icon="✉️")
+st.set_page_config(page_title="Email Health Audit | Email Solution Pro", page_icon="✉️", layout="centered")
 
-# 2. White Label: Hide Streamlit Menu and Footer
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            /* Custom styling for the audit button */
-            .stButton>button {width: 100%; border-radius: 5px; height: 3em; background-color: #007bff; color: white;}
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+# 2. Advanced Professional Styling (CSS)
+st.markdown("""
+    <style>
+    /* Main Background */
+    .stApp {
+        background-color: #f8f9fa;
+    }
+    
+    /* Hide Streamlit Header/Footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
 
-# 3. Logo and Header
-# Updated to look for your renamed file: logo.png
-try:
-    st.image("logo.png", width=350)
-except:
-    st.title("Email Solution Pro") # Fallback if image is missing
+    /* Center the Logo */
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0px;
+    }
 
-st.markdown("### Technical Email Health Audit")
+    /* Professional Card Look */
+    .result-card {
+        background-color: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Custom Button */
+    .stButton>button {
+        width: 100%;
+        background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        border: none;
+        padding: 15px;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# 3. Branded Header
+st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+st.image("logo.png", width=450)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown("<h2 style='text-align: center; color: #1e293b;'>Email Health Audit</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #64748b;'>Verify your domain authentication and reputation in real-time.</p>", unsafe_allow_html=True)
 st.divider()
 
 # 4. Input Area
-domain = st.text_input("Enter your domain to check records", value="", placeholder="example.com")
+domain = st.text_input("Enter your domain", value="", placeholder="e.g. company.com")
 
 # DNS Setup
 resolver = dns.resolver.Resolver()
@@ -47,113 +82,84 @@ def robust_query(query_domain, record_type):
     return None
 
 # 5. Audit Logic
-if st.button("🚀 Start Full Audit"):
+if st.button("🚀 Run Full Diagnostic"):
     if domain:
-        with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
-            time.sleep(1.2)
+        with st.spinner('Scanning DNS records...'):
+            time.sleep(1)
             
-            # Variables for Scoring
             spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
             ip_display = "N/A"
 
-            # Results Display
-            c1, c2 = st.columns(2)
+            # Layout for Analysis
+            col1, col2 = st.columns(2)
             
-            with c1:
-                st.subheader("🛡️ Authentication")
+            with col1:
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
+                st.subheader("🛡️ Security")
                 
                 # MX Check
                 mx_r = robust_query(domain, 'MX')
                 if mx_r:
-                    st.success(f"✅ MX Found: {mx_r[0].exchange}")
+                    st.success("✅ MX Record: Found")
                     mx_s = True
                 else:
-                    st.error("❌ MX Record Missing")
+                    st.error("❌ MX Record: Missing")
                 
                 # SPF Check
                 txt_r = robust_query(domain, 'TXT')
                 if txt_r:
                     spf_find = [r.to_text() for r in txt_r if "v=spf1" in r.to_text()]
                     if spf_find:
-                        st.success(f"✅ SPF Found")
+                        st.success("✅ SPF: Verified")
                         spf_s = True
                     else:
-                        st.error("❌ SPF Record Missing")
+                        st.error("❌ SPF: Missing")
                 
                 # DMARC Check
                 dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
                 if dm_r:
-                    st.success(f"✅ DMARC Found")
+                    st.success("✅ DMARC: Active")
                     dmarc_s = True
                 else:
-                    st.warning("⚠️ DMARC Not Found")
+                    st.warning("⚠️ DMARC: Inactive")
+                st.markdown('</div>', unsafe_allow_html=True)
 
-                # DKIM Check
-                for sel in ['google', 'default', 'k1', 'smtp']:
-                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
-                    if dk_r:
-                        st.success(f"✅ DKIM Found ({sel})")
-                        dkim_s = True
-                        break
-                if not dkim_s:
-                    st.info("ℹ️ DKIM: Custom selector in use?")
-
-            with c2:
+            with col2:
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
                 st.subheader("🚩 Reputation")
                 try:
                     ip_display = socket.gethostbyname(domain)
-                    st.info(f"Domain IP: {ip_display}")
+                    st.info(f"IP: {ip_display}")
                     
                     rev = ".".join(reversed(ip_display.split(".")))
                     try:
                         resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
-                        st.error("⚠️ ALERT: IP is Blacklisted!")
+                        st.error("🚨 Blacklisted (Spamhaus)")
                         black_s = False
                     except:
-                        st.success("✅ IP is Clean (Spamhaus)")
+                        st.success("✅ IP Reputation: Clean")
                 except:
-                    st.error("Could not resolve IP address.")
+                    st.error("Could not resolve IP.")
+                st.markdown('</div>', unsafe_allow_html=True)
 
-            # 6. Scoring & Visuals
+            # 6. Final Score & CTA
             st.divider()
             score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
-            s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
             
-            st.subheader(f"📊 Your Health Score: {score}/100")
-            if score >= 80: st.balloons()
-
-            # 7. Colorful Report Generation
-            report_html = f"""
-            <div style="font-family: Arial; border: 8px solid {s_color}; padding: 25px; border-radius: 15px;">
-                <h2 style="color: {s_color};">Email Health Audit Report</h2>
-                <p><b>Domain:</b> {domain} | <b>IP:</b> {ip_display}</p>
-                <hr>
-                <div style="font-size: 18px;">
-                    <p>{'✅' if mx_s else '❌'} MX Record</p>
-                    <p>{'✅' if spf_s else '❌'} SPF Record</p>
-                    <p>{'✅' if dmarc_s else '❌'} DMARC Record</p>
-                    <p>{'✅' if dkim_s else '❌'} DKIM Record</p>
-                    <p>{'✅' if black_s else '❌'} Clean Reputation</p>
-                </div>
-                <h3 style="color: {s_color};">Final Score: {score}/100</h3>
-                <p style="font-size: 14px;"><b>Need help fixing this?</b> Visit emailsolutionpro.com</p>
-            </div>
-            """
-
-            st.download_button(
-                label="📥 Download Detailed Report",
-                data=report_html,
-                file_name=f"Audit_{domain}.html",
-                mime="text/html"
-            )
+            # Using a metric for a dashboard feel
+            st.metric(label="Overall Health Score", value=f"{score}%")
             
-            # 8. Business Call to Action
-            if score < 100:
-                st.warning("🚨 We detected issues that could send your emails to spam.")
-                st.link_button("Contact an Expert to Fix This", "https://emailsolutionpro.com/contact")
+            if score >= 80:
+                st.balloons()
+                st.success("Excellent! Your domain is well-protected.")
+            else:
+                st.warning("We found vulnerabilities that could impact your deliverability.")
+                st.link_button("Fix These Issues Now", "https://emailsolutionpro.com/contact")
+
     else:
-        st.info("Please enter a domain name to begin.")
+        st.info("Please enter a domain to begin.")
 
-# Sidebar Info
-st.sidebar.title("About")
-st.sidebar.info("This professional tool is powered by Email Solution Pro to help businesses achieve 100% inbox delivery.")
+# Sidebar
+st.sidebar.image("logo.png", use_container_width=True)
+st.sidebar.markdown("---")
+st.sidebar.write("Powered by **Email Solution Pro**")
