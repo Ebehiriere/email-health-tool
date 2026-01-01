@@ -6,7 +6,7 @@ import time
 # 1. Page Configuration
 st.set_page_config(page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", page_icon="✉️")
 
-# 2. White Label & Premium Typography Styling
+# 2. White Label & High-End Typography Styling
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -18,22 +18,22 @@ hide_st_style = """
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             }
 
-            /* Professional Main Header Styling */
+            /* Main Header Styling: Bold, Tight, and Impactful */
             .main-title {
                 font-size: 44px !important;
                 font-weight: 800 !important;
                 letter-spacing: -1.8px !important;
-                color: #0f172a !important;
+                color: #0f172a !important; /* Premium Navy Black */
                 line-height: 1.1 !important;
                 margin-bottom: 0px !important;
                 padding-bottom: 5px !important;
             }
 
-            /* Professional Sub-title Styling */
+            /* Sub-title Styling: Muted Slate with Spacing */
             .sub-title {
                 font-size: 20px !important;
                 font-weight: 400 !important;
-                color: #64748b !important;
+                color: #64748b !important; /* Muted Professional Grey */
                 letter-spacing: -0.5px !important;
                 margin-top: -5px !important;
                 margin-bottom: 25px !important;
@@ -41,9 +41,19 @@ hide_st_style = """
 
             /* Custom styling for the audit button */
             .stButton>button {
-                width: 100%; border-radius: 5px; height: 3em; 
-                background-color: #007bff; color: white;
+                width: 100%; 
+                border-radius: 8px; 
+                height: 3.5em; 
+                background-color: #1e293b; 
+                color: white; 
                 font-weight: bold;
+                font-size: 18px;
+                border: none;
+                transition: 0.3s;
+            }
+            .stButton>button:hover {
+                background-color: #000000;
+                transform: translateY(-2px);
             }
             </style>
             """
@@ -55,6 +65,7 @@ try:
 except:
     st.title("Email Solution Pro") 
 
+# These use the custom CSS classes defined above
 st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 st.divider()
@@ -78,14 +89,16 @@ def robust_query(query_domain, record_type):
     return None
 
 # 5. Audit Logic
-if st.button("🚀 Start Full Audit"):
+if st.button("🚀 Run Free Deliverability Audit"):
     if domain:
         with st.spinner('🛠️ Analyzing Authentication & Reputation...'):
             time.sleep(1.2)
             
+            # Variables for Scoring
             spf_s, dmarc_s, mx_s, dkim_s, black_s = False, False, False, False, True 
             ip_display = "N/A"
 
+            # Results Display
             c1, c2 = st.columns(2)
             
             with c1:
@@ -108,8 +121,6 @@ if st.button("🚀 Start Full Audit"):
                         spf_s = True
                     else:
                         st.error("❌ SPF Record Missing")
-                else:
-                    st.error("❌ TXT Records Missing")
                 
                 # DMARC Check
                 dm_r = robust_query(f"_dmarc.{domain}", 'TXT')
@@ -119,29 +130,57 @@ if st.button("🚀 Start Full Audit"):
                 else:
                     st.warning("⚠️ DMARC Not Found")
 
+                # DKIM Check
+                for sel in ['google', 'default', 'k1', 'smtp']:
+                    dk_r = robust_query(f"{sel}._domainkey.{domain}", 'TXT')
+                    if dk_r:
+                        st.success(f"✅ DKIM Found ({sel})")
+                        dkim_s = True
+                        break
+                if not dkim_s:
+                    st.info("ℹ️ DKIM: Custom selector?")
+
             with c2:
                 st.subheader("🚩 Reputation")
                 try:
                     ip_display = socket.gethostbyname(domain)
                     st.info(f"Domain IP: {ip_display}")
+                    
                     rev = ".".join(reversed(ip_display.split(".")))
                     try:
                         resolver.resolve(f"{rev}.zen.spamhaus.org", 'A')
-                        st.error("⚠️ ALERT: IP Blacklisted!")
+                        st.error("⚠️ ALERT: IP is Blacklisted!")
                         black_s = False
                     except:
                         st.success("✅ IP is Clean")
                 except:
-                    st.error("Could not resolve IP.")
+                    st.error("Could not resolve IP address.")
 
-            # 6. Scoring
+            # 6. Scoring & Visuals
             st.divider()
             score = sum([mx_s, spf_s, dmarc_s, dkim_s, black_s]) * 20
             s_color = "#28a745" if score >= 80 else "#ffc107" if score >= 60 else "#dc3545"
+            
             st.subheader(f"📊 Your Health Score: {score}/100")
             if score >= 80: st.balloons()
 
-            # 7. CTA
+            # 7. Report Generation
+            report_html = f"""
+            <div style="font-family: Arial; border: 8px solid {s_color}; padding: 25px; border-radius: 15px;">
+                <h2 style="color: {s_color};">Email Health Audit Report</h2>
+                <p><b>Domain:</b> {domain}</p>
+                <hr>
+                <p>{'✅' if mx_s else '❌'} MX Record</p>
+                <p>{'✅' if spf_s else '❌'} SPF Record</p>
+                <p>{'✅' if dmarc_s else '❌'} DMARC Record</p>
+                <p>{'✅' if black_s else '❌'} Clean Reputation</p>
+                <h3 style="color: {s_color};">Final Score: {score}/100</h3>
+            </div>
+            """
+
+            st.download_button(label="📥 Download Detailed Report", data=report_html, file_name=f"Audit_{domain}.html", mime="text/html")
+            
+            # 8. Business CTA
             st.markdown("---")
             if score < 100:
                 st.warning("🚨 Issues detected! Your emails might be landing in spam folders.")
@@ -149,9 +188,11 @@ if st.button("🚀 Start Full Audit"):
             else:
                 st.success("Great job! Your domain is healthy.")
                 st.link_button("👉 Contact Email Solution Pro", "https://emailsolutionpro.com/contact")
+                
     else:
         st.info("Please enter a domain name to begin.")
 
 # Sidebar Info
+st.sidebar.image("logo.png", use_container_width=True)
 st.sidebar.title("About")
-st.sidebar.info("This professional tool is powered by Email Solution Pro to help businesses achieve 100% inbox delivery.")
+st.sidebar.info("Professional tool by Email Solution Pro.")
