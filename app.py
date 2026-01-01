@@ -7,7 +7,7 @@ import time
 st.set_page_config(
     page_title="Free Email Spam Test & Deliverability Checker | Email Solution Pro", 
     page_icon="✉️",
-    layout="wide"
+    initial_sidebar_state="expanded"
 )
 
 # 2. Enhanced Styling with Modern Design
@@ -31,26 +31,24 @@ html, body, [class*="css"], .stMarkdown {
 
 /* Main Header Styling */
 .main-title {
-    font-size: 48px !important;
-    font-weight: 800 !important;
-    letter-spacing: -2px !important;
-    color: #0f172a !important;
-    line-height: 1.1 !important;
-    margin-bottom: 8px !important;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 42px !important;
+    font-weight: 700 !important;
+    letter-spacing: -1px !important;
+    color: #1e293b !important;
+    line-height: 1.2 !important;
+    margin-bottom: 16px !important;
+    margin-top: 24px !important;
 }
 
 /* Sub-title Styling */
 .sub-title {
-    font-size: 22px !important;
+    font-size: 20px !important;
     font-weight: 500 !important;
     color: #64748b !important;
-    letter-spacing: -0.3px !important;
+    letter-spacing: 0px !important;
     margin-top: 0px !important;
     margin-bottom: 32px !important;
+    line-height: 1.4 !important;
 }
 
 /* Input Field Enhancement */
@@ -155,26 +153,22 @@ section[data-testid="stSidebar"] > div {
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # 3. Header Section with Logo
-col1, col2, col3 = st.columns([1, 3, 1])
-with col2:
-    try:
-        st.image("logo.png", width=320)
-    except:
-        st.markdown("### Email Solution Pro")
-    
-    st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
+try:
+    st.image("logo.png", width=320)
+except:
+    st.markdown("### Email Solution Pro")
+
+st.markdown('<p class="main-title">Free Email Spam Test & Deliverability Checker</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">Instant Email Health & Reputation Analysis</p>', unsafe_allow_html=True)
 
 # 4. Input Section with Better Layout
-col_left, col_center, col_right = st.columns([1, 6, 1])
-with col_center:
-    domain = st.text_input(
-        "Enter your domain to check records", 
-        value="", 
-        placeholder="example.com",
-        label_visibility="collapsed"
-    )
-    st.caption("💡 Enter your sending domain (e.g., yourdomain.com) to analyze email authentication and reputation")
+domain = st.text_input(
+    "Enter your domain to check records", 
+    value="", 
+    placeholder="example.com",
+    label_visibility="collapsed"
+)
+st.caption("💡 Enter your sending domain (e.g., yourdomain.com) to analyze email authentication and reputation")
 
 st.write("")  # Spacing
 
@@ -194,9 +188,7 @@ def robust_query(query_domain, record_type):
     return None
 
 # 5. Audit Button
-col_btn_left, col_btn_center, col_btn_right = st.columns([2, 4, 2])
-with col_btn_center:
-    audit_button = st.button("🚀 Run Free Deliverability Audit")
+audit_button = st.button("🚀 Run Free Deliverability Audit")
 
 # 6. Audit Logic with Enhanced Display
 if audit_button:
