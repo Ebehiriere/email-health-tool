@@ -213,3 +213,36 @@ if st.button("🚀 Run Free Deliverability Audit"):
     else:
         st.info("Please enter a domain name to begin.")
 
+
+# 6. Custom Professional Footer
+st.markdown("""
+    <style>
+    .footer {
+        position: fixed;
+        left: 300px; /* Aligned with your locked sidebar width */
+        bottom: 0;
+        width: calc(100% - 300px);
+        background-color: white;
+        color: #94a3b8;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+        border-top: 1px solid #e2e8f0;
+        z-index: 999;
+    }
+    
+    /* Adjust footer for mobile if sidebar collapses */
+    @media (max-width: 768px) {
+        .footer {
+            left: 0;
+            width: 100%;
+        }
+    }
+    </style>
+    <div class="footer">
+        © 2026 <b>Email Solution Pro</b> | 
+        <a href="https://emailsolutionpro.com/privacy" style="color: #94a3b8; text-decoration: none;">Privacy</a> | 
+        <a href="https://emailsolutionpro.com/terms" style="color: #94a3b8; text-decoration: none;">Terms</a> |
+        Optimizing Deliverability for High-Volume Senders
+    </div>
+""", unsafe_allow_html=True)
