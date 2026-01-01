@@ -195,5 +195,6 @@ if st.button("🚀 Run Free Deliverability Audit"):
 # Sidebar Info
 st.sidebar.image("logo.png", use_container_width=True)
 st.sidebar.title("About")
-st.sidebar.info("Professional tool by Email Solution Pro.")
+st.sidebar.info(This professional tool is powered by EmailSolutionPro.com to help businesses achieve 100% inbox delivery.")
+
 
